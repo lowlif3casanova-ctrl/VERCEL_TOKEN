@@ -264,7 +264,7 @@ gamma sidebands stay a critical band clear of the primary carrier.
   high-pass, reverb (3.6 s synthetic stone-chamber impulse response) on the
   event bus only.
 - Integrated loudness **−16 LUFS** (BS.1770-4), true peak ≤ −1 dBTP (measured
-  about −3 dBTP on both sessions; the limiter is never engaged). At a comfortable headphone
+  −3.6 dBTP full, −3.4 daily, −3.5 sleep; the limiter is never engaged). At a comfortable headphone
   setting this lands the beat layers near the 65–70 dB SPL used in the EEG
   studies and keeps the whole session far below the WHO 80 dBA weekly limit.
 - Exports: 48 kHz float32 WAV master, 24-bit FLAC, 320 kbps MP3 with
