@@ -1,0 +1,11 @@
+# Rendered audio is large and fully reproducible from generator/ (fixed seeds)
+output/
+*.wav
+*.flac
+*.mp3
+*.opus
+
+# Python
+__pycache__/
+*.pyc
+.venv/
