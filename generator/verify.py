@@ -48,7 +48,8 @@ def carrier_peak(x, sr, f_expect, search=3.0, nfft=None):
     else:
         p = 0.0
     f = freqs[k] + p * (freqs[1] - freqs[0])
-    amp = X[k] / (np.sum(w) / 2.0)
+    # level over ±2 bins around the peak (a steady carrier is a line; a few bins absorb window leakage)
+    amp = np.sqrt(np.sum(X[max(k - 2, 0):k + 3] ** 2)) / (np.sum(w) / 2.0)
     return float(f), float(amp)
 
 
@@ -109,6 +110,18 @@ def main(wav_path, manifest_path, out_dir):
     def bowl_near(t, hz):
         return any(0 <= t - t0 <= 40.0 and abs(f0 - hz) < 6.0 for (t0, f0) in ringing)
 
+    thunders = [ev["t"] for ev in man.get("thunder", [])]
+
+    def clean_window(t, car):
+        """No bowl on this pitch, no panned thunder in the window, and no beat ramp across it
+        (a ramp smears the carrier line over many bins and makes a single-window level unreliable)."""
+        if bowl_near(t, car["hz"]):
+            return False
+        if any(-12.0 <= t - t0 <= 36.0 for t0 in thunders):
+            return False
+        lane = car.get("beat_lane") or man["beat_lane"]
+        return abs(lane_value(lane, t - 10.0) - lane_value(lane, t + 10.0)) < 0.02
+
     clean_balances = []
     for t in times:
         c = int(t * sr)
@@ -124,7 +137,7 @@ def main(wav_path, manifest_path, out_dir):
             meas = abs(fR - fL)
             bal = 20 * np.log10((aL + 1e-12) / (aR + 1e-12))
             flag = " (bowl on this pitch ringing)" if bowl_near(t, car["hz"]) else ""
-            if not flag:
+            if clean_window(t, car):
                 clean_balances.append(abs(bal))
             rows.append((t, f"binaural {car['hz']:.2f} Hz{flag}", beat_d, meas, bal))
             if car is man["carriers"][0]:
@@ -186,7 +199,7 @@ def main(wav_path, manifest_path, out_dir):
         lines.append(f"| {t/60:.2f} | {name} | {d:.3f} | {m:.3f} | {err:+.3f} | {bal:+.2f} |")
     worst_bal = max(clean_balances) if clean_balances else 0.0
     lines += ["", f"Largest beat-rate error across all windows: **{worst:.3f} Hz** (a 20 s window has 0.05 Hz intrinsic resolution; ramping sections show the mean over the window).",
-              f"Largest interaural level difference of a carrier in windows with no bowl ringing on that pitch: **{worst_bal:.2f} dB** (target < 0.5 dB). Rows marked 'bowl on this pitch ringing' are windows where a monaural bowl's doublet sits on the carrier's frequencies by design, so the balance figure there measures the bowl's pan, not the carrier.", ""]
+              f"Largest interaural level difference of a carrier in clean windows (steady beat, no bowl ringing on that pitch, no thunder event): **{worst_bal:.2f} dB** over {len(clean_balances)} windows (target < 0.5 dB). Rows marked 'bowl on this pitch ringing' are windows where a monaural bowl's doublet sits on the carrier's frequencies by design, so the balance figure there measures the bowl's pan, not the carrier; ramping windows smear the carrier line and are excluded from the summary for the same reason.", ""]
     if spatial_rows:
         worst_sp = max(abs(m - d) for (_, d, m) in spatial_rows)
         lines += ["## Robustness to headphone spatialisers (iOS 'Spatialize Stereo' and similar)", "",

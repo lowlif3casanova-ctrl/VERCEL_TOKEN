@@ -7,10 +7,10 @@ Duration: 15.00 min · Sample rate: 48000 Hz · Channels: 2
 | Metric | Value |
 |---|---|
 | Integrated loudness (BS.1770-4) | -16.00 LUFS |
-| True peak (4× oversampled) | -3.30 dBTP |
-| Sample peak | -3.31 dBFS |
+| True peak (4× oversampled) | -3.58 dBTP |
+| Sample peak | -3.58 dBFS |
 | Samples at/over 0 dBFS | 0 |
-| DC offset L / R | 7.20e-08 / -3.47e-07 |
+| DC offset L / R | -1.06e-07 / -8.49e-09 |
 
 ## Beat / pulse rate: designed vs measured
 
@@ -18,103 +18,120 @@ Each row is a 20-second window.  `beat` is |f_right − f_left| of the carrier p
 
 | t (min) | layer | designed Hz | measured Hz | error Hz | L−R balance dB |
 |---|---|---|---|---|---|
-| 0.20 | binaural 408.30 Hz | 10.000 | 10.000 | -0.000 | +0.01 |
+| 0.20 | binaural 408.30 Hz | 10.000 | 10.000 | +0.000 | +0.06 |
 | 0.20 | binaural 272.20 Hz | 10.000 | 10.000 | +0.000 | -0.01 |
-| 0.20 | binaural 136.10 Hz | 10.000 | 10.001 | +0.001 | +0.11 |
-| 0.50 | binaural 408.30 Hz | 10.000 | 10.000 | +0.000 | +0.03 |
-| 0.50 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | -0.02 |
-| 0.50 | binaural 136.10 Hz | 10.000 | 10.000 | +0.000 | -0.01 |
-| 1.00 | binaural 408.30 Hz | 10.000 | 10.000 | +0.000 | +0.04 |
-| 1.00 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | -0.02 |
-| 1.00 | binaural 136.10 Hz | 10.000 | 10.000 | +0.000 | +0.04 |
-| 1.50 | binaural 408.30 Hz | 10.000 | 10.000 | -0.000 | -0.03 |
-| 1.50 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | -0.00 |
-| 1.50 | binaural 136.10 Hz | 10.000 | 10.000 | -0.000 | +0.01 |
-| 1.80 | binaural 408.30 Hz | 10.000 | 10.000 | +0.000 | +0.01 |
-| 1.80 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | +0.01 |
-| 1.80 | binaural 136.10 Hz | 10.000 | 10.000 | -0.000 | +0.08 |
-| 2.20 | binaural 408.30 Hz | 9.937 | 9.933 | -0.004 | -0.03 |
-| 2.20 | binaural 272.20 Hz | 9.937 | 9.933 | -0.004 | -0.02 |
-| 2.20 | binaural 136.10 Hz | 9.937 | 9.933 | -0.004 | +0.03 |
-| 2.50 | binaural 408.30 Hz | 9.618 | 9.617 | -0.001 | -0.00 |
-| 2.50 | binaural 272.20 Hz | 9.618 | 9.617 | -0.002 | +0.01 |
-| 2.50 | binaural 136.10 Hz | 9.618 | 9.616 | -0.002 | -0.07 |
-| 3.50 | binaural 408.30 Hz | 7.382 | 7.380 | -0.002 | -0.07 |
-| 3.50 | binaural 272.20 Hz | 7.382 | 7.381 | -0.001 | -0.03 |
-| 3.50 | binaural 136.10 Hz | 7.382 | 7.382 | +0.000 | -0.01 |
-| 4.50 | binaural 408.30 Hz | 6.000 | 6.002 | +0.002 | -0.10 |
-| 4.50 | binaural 272.20 Hz | 6.000 | 6.002 | +0.002 | +0.07 |
-| 4.50 | binaural 136.10 Hz | 6.000 | 6.002 | +0.002 | +0.02 |
-| 4.80 | binaural 408.30 Hz | 6.000 | 6.000 | -0.000 | -0.02 |
-| 4.80 | binaural 272.20 Hz | 6.000 | 6.000 | -0.000 | +0.05 |
-| 4.80 | binaural 136.10 Hz | 6.000 | 6.000 | +0.000 | -0.04 |
-| 5.20 | binaural 408.30 Hz | 5.833 | 5.829 | -0.004 | +0.04 |
-| 5.20 | binaural 272.20 Hz | 5.833 | 5.829 | -0.003 | -0.02 |
-| 5.20 | binaural 136.10 Hz | 5.833 | 5.830 | -0.003 | +0.00 |
+| 0.20 | binaural 136.10 Hz (bowl on this pitch ringing) | 10.000 | 10.001 | +0.001 | +0.13 |
+| 0.50 | binaural 408.30 Hz | 10.000 | 10.000 | +0.000 | +0.04 |
+| 0.50 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | +0.02 |
+| 0.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 10.000 | 10.000 | -0.000 | +0.03 |
+| 1.00 | binaural 408.30 Hz | 10.000 | 10.000 | -0.000 | -0.02 |
+| 1.00 | binaural 272.20 Hz | 10.000 | 10.000 | +0.000 | -0.01 |
+| 1.00 | binaural 136.10 Hz (bowl on this pitch ringing) | 10.000 | 10.000 | +0.000 | +0.03 |
+| 1.50 | binaural 408.30 Hz | 10.000 | 10.000 | -0.000 | +0.04 |
+| 1.50 | binaural 272.20 Hz | 10.000 | 10.000 | -0.000 | -0.01 |
+| 1.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 10.000 | 10.000 | +0.000 | +0.09 |
+| 1.80 | binaural 408.30 Hz | 10.000 | 10.000 | -0.000 | +0.02 |
+| 1.80 | binaural 272.20 Hz | 10.000 | 10.000 | +0.000 | -0.00 |
+| 1.80 | binaural 136.10 Hz (bowl on this pitch ringing) | 10.000 | 10.000 | -0.000 | +0.06 |
+| 2.20 | binaural 408.30 Hz | 9.937 | 9.933 | -0.004 | -0.01 |
+| 2.20 | binaural 272.20 Hz | 9.937 | 9.933 | -0.004 | +0.03 |
+| 2.20 | binaural 136.10 Hz (bowl on this pitch ringing) | 9.937 | 9.933 | -0.004 | +0.01 |
+| 2.50 | binaural 408.30 Hz | 9.618 | 9.616 | -0.002 | -0.02 |
+| 2.50 | binaural 272.20 Hz | 9.618 | 9.616 | -0.002 | -0.01 |
+| 2.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 9.618 | 9.617 | -0.001 | +0.00 |
+| 3.50 | binaural 408.30 Hz | 7.382 | 7.381 | -0.001 | +0.02 |
+| 3.50 | binaural 272.20 Hz | 7.382 | 7.381 | -0.001 | -0.00 |
+| 3.50 | binaural 136.10 Hz | 7.382 | 7.381 | -0.001 | +0.07 |
+| 4.50 | binaural 408.30 Hz | 6.000 | 6.002 | +0.002 | -0.11 |
+| 4.50 | binaural 272.20 Hz | 6.000 | 6.002 | +0.002 | +0.08 |
+| 4.50 | binaural 136.10 Hz | 6.000 | 6.002 | +0.002 | -0.02 |
+| 4.80 | binaural 408.30 Hz | 6.000 | 6.000 | -0.000 | -0.04 |
+| 4.80 | binaural 272.20 Hz | 6.000 | 6.000 | -0.000 | +0.04 |
+| 4.80 | binaural 136.10 Hz | 6.000 | 6.000 | +0.000 | -0.06 |
+| 5.20 | binaural 408.30 Hz | 5.833 | 5.829 | -0.003 | +0.05 |
+| 5.20 | binaural 272.20 Hz | 5.833 | 5.830 | -0.003 | -0.03 |
+| 5.20 | binaural 136.10 Hz (bowl on this pitch ringing) | 5.833 | 5.830 | -0.003 | +0.02 |
 | 5.50 | binaural 408.30 Hz | 5.125 | 5.125 | +0.000 | +0.01 |
-| 5.50 | binaural 272.20 Hz | 5.125 | 5.125 | -0.000 | -0.01 |
-| 5.50 | binaural 136.10 Hz | 5.125 | 5.128 | +0.003 | +0.00 |
+| 5.50 | binaural 272.20 Hz | 5.125 | 5.124 | -0.001 | -0.00 |
+| 5.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 5.125 | 5.129 | +0.004 | -0.01 |
 | 6.50 | binaural 408.30 Hz | 4.250 | 4.250 | +0.000 | +0.06 |
-| 6.50 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.06 |
-| 6.50 | binaural 136.10 Hz | 4.250 | 4.250 | +0.000 | +0.07 |
+| 6.50 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.07 |
+| 6.50 | binaural 136.10 Hz | 4.250 | 4.250 | +0.000 | +0.08 |
 | 6.50 | isochronic 204.1 Hz | 4.250 | 4.246 | -0.004 | +0.00 |
-| 7.50 | binaural 408.30 Hz | 4.250 | 4.250 | -0.000 | +0.06 |
-| 7.50 | binaural 272.20 Hz | 4.250 | 4.250 | -0.000 | -0.04 |
-| 7.50 | binaural 136.10 Hz | 4.250 | 4.252 | +0.002 | -0.75 |
+| 7.50 | binaural 408.30 Hz | 4.250 | 4.250 | -0.000 | +0.07 |
+| 7.50 | binaural 272.20 Hz | 4.250 | 4.250 | -0.000 | -0.06 |
+| 7.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 4.250 | 4.249 | -0.001 | -1.94 |
 | 7.50 | isochronic 204.1 Hz | 4.250 | 4.246 | -0.004 | +0.00 |
 | 8.50 | binaural 408.30 Hz | 4.250 | 4.250 | +0.000 | +0.07 |
 | 8.50 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.07 |
 | 8.50 | binaural 136.10 Hz | 4.250 | 4.250 | -0.000 | +0.07 |
 | 8.50 | isochronic 204.1 Hz | 4.250 | 4.246 | -0.004 | +0.00 |
 | 9.50 | binaural 408.30 Hz | 4.250 | 4.250 | -0.000 | +0.07 |
-| 9.50 | binaural 272.20 Hz | 4.250 | 4.250 | -0.000 | -0.07 |
-| 9.50 | binaural 136.10 Hz | 4.250 | 4.251 | +0.001 | -0.08 |
+| 9.50 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.08 |
+| 9.50 | binaural 136.10 Hz | 4.250 | 4.251 | +0.001 | -0.09 |
 | 9.50 | isochronic 204.1 Hz | 4.250 | 4.246 | -0.004 | +0.00 |
 | 9.80 | binaural 408.30 Hz | 4.250 | 4.250 | +0.000 | +0.06 |
-| 9.80 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.07 |
-| 9.80 | binaural 136.10 Hz | 4.250 | 4.250 | -0.000 | +0.01 |
+| 9.80 | binaural 272.20 Hz | 4.250 | 4.250 | +0.000 | -0.08 |
+| 9.80 | binaural 136.10 Hz | 4.250 | 4.250 | +0.000 | +0.02 |
 | 9.80 | isochronic 204.1 Hz | 4.250 | 4.246 | -0.004 | +0.00 |
-| 10.20 | binaural 408.30 Hz | 4.067 | 4.065 | -0.002 | +0.02 |
-| 10.20 | binaural 272.20 Hz | 4.067 | 4.106 | +0.039 | +3.33 |
-| 10.20 | binaural 136.10 Hz | 5.092 | 4.996 | -0.096 | -0.01 |
-| 10.20 | isochronic 204.1 Hz | 4.067 | 4.086 | +0.019 | +0.00 |
-| 10.50 | binaural 408.30 Hz | 3.386 | 3.383 | -0.003 | -0.00 |
-| 10.50 | binaural 272.20 Hz | 3.386 | 3.382 | -0.004 | -0.03 |
-| 10.50 | binaural 136.10 Hz | 8.225 | 8.290 | +0.065 | +0.03 |
+| 10.20 | binaural 408.30 Hz | 4.067 | 4.065 | -0.002 | +0.01 |
+| 10.20 | binaural 272.20 Hz (bowl on this pitch ringing) | 4.067 | 4.065 | -0.002 | -0.05 |
+| 10.20 | binaural 136.10 Hz (bowl on this pitch ringing) | 5.092 | 4.993 | -0.099 | +0.01 |
+| 10.20 | isochronic 204.1 Hz | 4.067 | 4.108 | +0.041 | +0.00 |
+| 10.50 | binaural 408.30 Hz | 3.386 | 3.382 | -0.004 | -0.07 |
+| 10.50 | binaural 272.20 Hz (bowl on this pitch ringing) | 3.386 | 3.381 | -0.005 | -0.04 |
+| 10.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 8.225 | 8.262 | +0.036 | -0.02 |
 | 10.50 | isochronic 204.1 Hz | 3.386 | 3.387 | +0.002 | +0.00 |
 | 10.50 | isochronic 544.4 Hz | 40.000 | 39.997 | -0.003 | +0.00 |
-| 11.25 | binaural 408.30 Hz | 3.000 | 3.001 | +0.001 | +0.11 |
-| 11.25 | binaural 272.20 Hz | 3.000 | 3.001 | +0.001 | +0.07 |
-| 11.25 | binaural 136.10 Hz | 10.000 | 10.000 | +0.000 | +0.04 |
+| 11.25 | binaural 408.30 Hz (bowl on this pitch ringing) | 3.000 | 3.000 | +0.000 | -0.01 |
+| 11.25 | binaural 272.20 Hz | 3.000 | 3.000 | -0.000 | -0.25 |
+| 11.25 | binaural 136.10 Hz | 10.000 | 10.000 | -0.000 | +0.01 |
 | 11.25 | isochronic 204.1 Hz | 3.000 | 2.998 | -0.002 | +0.00 |
 | 11.25 | isochronic 544.4 Hz | 40.000 | 39.997 | -0.003 | +0.00 |
-| 11.50 | binaural 408.30 Hz | 3.000 | 3.000 | +0.000 | -0.02 |
-| 11.50 | binaural 272.20 Hz | 3.000 | 3.001 | +0.001 | -0.06 |
-| 11.50 | binaural 136.10 Hz | 10.000 | 10.000 | -0.000 | +0.05 |
+| 11.50 | binaural 408.30 Hz (bowl on this pitch ringing) | 3.000 | 3.001 | +0.001 | +0.28 |
+| 11.50 | binaural 272.20 Hz | 3.000 | 3.000 | -0.000 | +0.30 |
+| 11.50 | binaural 136.10 Hz | 10.000 | 10.000 | +0.000 | -0.00 |
 | 11.50 | isochronic 204.1 Hz | 3.000 | 2.998 | -0.002 | +0.00 |
 | 11.50 | isochronic 544.4 Hz | 40.000 | 39.997 | -0.003 | +0.00 |
 | 12.30 | binaural 408.30 Hz | 3.000 | 3.019 | +0.019 | +0.02 |
-| 12.30 | binaural 272.20 Hz | 3.000 | 3.019 | +0.019 | -0.01 |
-| 12.30 | binaural 136.10 Hz | 10.000 | 9.991 | -0.009 | +0.02 |
-| 12.30 | isochronic 204.1 Hz | 3.000 | 3.010 | +0.010 | +0.00 |
+| 12.30 | binaural 272.20 Hz | 3.000 | 3.018 | +0.018 | +0.01 |
+| 12.30 | binaural 136.10 Hz | 10.000 | 9.991 | -0.009 | +0.01 |
+| 12.30 | isochronic 204.1 Hz | 3.000 | 3.147 | +0.147 | +0.00 |
 | 12.30 | isochronic 544.4 Hz | 40.000 | 39.997 | -0.003 | +0.00 |
-| 12.50 | binaural 408.30 Hz | 3.565 | 3.503 | -0.062 | +0.00 |
-| 12.50 | binaural 272.20 Hz | 3.565 | 3.504 | -0.061 | -0.00 |
-| 12.50 | binaural 136.10 Hz | 9.746 | 9.758 | +0.012 | +0.09 |
+| 12.50 | binaural 408.30 Hz | 3.565 | 3.505 | -0.060 | +0.00 |
+| 12.50 | binaural 272.20 Hz | 3.565 | 3.502 | -0.063 | -0.01 |
+| 12.50 | binaural 136.10 Hz (bowl on this pitch ringing) | 9.746 | 9.758 | +0.012 | +0.09 |
 | 12.50 | isochronic 544.4 Hz | 40.000 | 39.997 | -0.003 | +0.00 |
-| 12.70 | binaural 408.30 Hz | 4.996 | 4.978 | -0.018 | -0.00 |
-| 12.70 | binaural 272.20 Hz | 4.996 | 4.988 | -0.007 | -0.02 |
-| 12.70 | binaural 136.10 Hz | 9.103 | 9.100 | -0.003 | -0.14 |
-| 13.50 | binaural 408.30 Hz | 8.514 | 8.483 | -0.031 | -0.00 |
-| 13.50 | binaural 272.20 Hz | 8.514 | 8.492 | -0.022 | +0.03 |
-| 13.50 | binaural 136.10 Hz | 8.514 | 8.483 | -0.031 | +0.20 |
-| 13.75 | binaural 408.30 Hz | 9.930 | 9.922 | -0.007 | +0.05 |
-| 13.75 | binaural 272.20 Hz | 9.930 | 9.919 | -0.011 | +0.01 |
-| 13.75 | binaural 136.10 Hz | 9.930 | 9.946 | +0.017 | +0.53 |
-| 14.80 | binaural 408.30 Hz | 14.100 | 14.101 | +0.001 | -0.07 |
-| 14.80 | binaural 272.20 Hz | 14.100 | 14.100 | +0.000 | +0.11 |
+| 12.70 | binaural 408.30 Hz | 4.996 | 4.977 | -0.018 | -0.01 |
+| 12.70 | binaural 272.20 Hz | 4.996 | 4.982 | -0.013 | -0.01 |
+| 12.70 | binaural 136.10 Hz (bowl on this pitch ringing) | 9.103 | 9.101 | -0.002 | -0.15 |
+| 13.50 | binaural 408.30 Hz | 8.514 | 8.484 | -0.029 | +0.04 |
+| 13.50 | binaural 272.20 Hz | 8.514 | 8.483 | -0.031 | +0.03 |
+| 13.50 | binaural 136.10 Hz | 8.514 | 8.497 | -0.017 | +0.19 |
+| 13.75 | binaural 408.30 Hz | 9.930 | 9.917 | -0.013 | +0.06 |
+| 13.75 | binaural 272.20 Hz | 9.930 | 9.918 | -0.011 | +0.10 |
+| 13.75 | binaural 136.10 Hz | 9.930 | 9.953 | +0.023 | +0.62 |
+| 14.80 | binaural 408.30 Hz | 14.100 | 14.100 | -0.000 | +0.00 |
+| 14.80 | binaural 272.20 Hz | 14.100 | 14.099 | -0.001 | -0.07 |
 
-Largest beat-rate error across all windows: **0.096 Hz** (a 20 s window has 0.05 Hz intrinsic resolution; ramping sections show the mean over the window).
+Largest beat-rate error across all windows: **0.147 Hz** (a 20 s window has 0.05 Hz intrinsic resolution; ramping sections show the mean over the window).
+Largest interaural level difference of a carrier in windows with no bowl ringing on that pitch: **0.62 dB** (target < 0.5 dB). Rows marked 'bowl on this pitch ringing' are windows where a monaural bowl's doublet sits on the carrier's frequencies by design, so the balance figure there measures the bowl's pan, not the carrier.
+
+## Robustness to headphone spatialisers (iOS 'Spatialize Stereo' and similar)
+
+A spatialiser feeds each channel partly into the opposite ear (simulated here: −7 dB, 0.45 ms, head-shadow low-pass). The binaural pair then also forms an acoustic (monaural) beat inside each ear. Measured pulse rate of the primary carrier's envelope in the left ear after that crosstalk:
+
+| t (min) | designed Hz | measured in-ear beat Hz | error Hz |
+|---|---|---|---|
+| 0.20 | 10.000 | 10.002 | +0.002 |
+| 1.80 | 10.000 | 10.002 | +0.002 |
+| 4.50 | 6.000 | 5.997 | -0.003 |
+| 6.50 | 4.250 | 4.246 | -0.004 |
+| 9.80 | 4.250 | 4.246 | -0.004 |
+| 11.50 | 3.000 | 2.998 | -0.002 |
+| 13.50 | 8.514 | 8.492 | -0.022 |
+
+Largest error under simulated spatialisation: **0.022 Hz** — the entrainment rate survives, though as a monaural rather than purely binaural beat. Turning Spatialize Stereo off is still recommended (see the listening guide).
 
 ## Figures
 
