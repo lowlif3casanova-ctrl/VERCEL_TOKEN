@@ -1,7 +1,9 @@
 # Pineal Gateway — listening guide
 
-Two sessions: **the full journey (48 minutes)** and **the daily session (15
-minutes)**. Both are binaural: **stereo headphones are required** (over-ear or
+Three renders: **the full journey (48 minutes)**, **the daily session (15
+minutes)** and **the sleep variant (40 minutes: the full arc to the floor,
+then it stays there and fades out, with no call-back, no 40 Hz cues and no
+re-alerting ramp)**. All are binaural: **stereo headphones are required** (over-ear or
 in-ear; not bone-conduction, not speakers, not one earbud). The tones in the
 left and right ears differ by a few hertz, and the "beat" the track is built
 around exists only when each ear hears its own tone.
@@ -109,8 +111,8 @@ workbook's *Protocol 48 min* sheet.
 
 ### 1. Threshold (0:00–4:00) — tinkling, bell, Om
 Alpha beat at 10 Hz. A pair of tingsha, a temple bell, the Om drone, then the
-first Om bowls, a little to the right (the Hatha Yoga Pradipika says to listen
-for the inner sound in the right ear). A soft ocean-like swell paces the breath:
+first bowls on the fifth and the fourth of Om, a little to the right (the
+Hatha Yoga Pradipika says to listen for the inner sound in the right ear). A soft ocean-like swell paces the breath:
 eight breaths a minute at first, easing to six by minute 3. **Do:** the
 preparation above. Breathe with the swell.
 
@@ -130,9 +132,9 @@ marker. From 9:00, kriya-style spinal breathing if you practise it.
 Distant thunder opens the gate. A frame drum begins at 4.25 Hz (255 beats a
 minute: the tempo Gingras et al. 2014 measured on Harner's own recording; the
 Foundation for Shamanic Studies itself says "about five beats a second") and
-plays for nine minutes, with a theta pulse underneath, a didgeridoo breathing at
-68 Hz and a stone-chamber drone at 109 Hz. The binaural beat settles at 4.25
-Hz. **Do:** the core shamanic method. Picture a real place you know with an
+plays for nine minutes, unaccented, with a theta pulse underneath, a
+didgeridoo breathing at 68 Hz and a stone-chamber drone at 102 Hz. The
+binaural beat settles at 4.25 Hz. **Do:** the core shamanic method. Picture a real place you know with an
 opening into the earth (a spring, a cave, roots, a hole). Enter it when the
 drum is steady, travel down, and let whatever you meet come to you. Do not
 force images; attend to the drum when the mind wanders. Let the breath go
@@ -178,7 +180,7 @@ drumming, four sevens, then slow grounding strokes (the fast burst and the slow
 grounding are the Foundation for Shamanic Studies pattern; the sevens are a
 widespread workshop convention). The beat rises 7.83 → 10 → 14.1 Hz so that you
 come back alert, not groggy. A single 963 Hz bowl rings once in the clear at
-45:20. Om bowls and tingsha close the circle. **Do:** when you hear the fast
+45:20. Bowls on the fifth and fourth of Om and the tingsha close the circle. **Do:** when you hear the fast
 drumming, take three physiological sighs (two inhales, one long exhale),
 retrace your path and come back by the way you went in. Breathe with the pacer,
 stretch on the last bowls, open your eyes slowly, write down everything before
@@ -219,7 +221,13 @@ you knowledge you did not have, make wishes come true, or move you between
 dimensions or times. Those phrases appear in this project because they are
 the frames of the traditions the design draws on (Monroe's "no time", the
 Bardo, the seven heavens of the Hermetic texts), and they are labelled that
-way in `DESIGN.md`. The practice is real. The promises are not ours to make.
+way in `DESIGN.md`. The linking of the brow centre to the pineal gland is
+itself a modern idea (Theosophy, 1888 onward); the classical texts never
+mention the gland. If "travel between realms by sound" is what you are after,
+the living traditions closest to it are Sant Mat's Surat Shabd Yoga (following
+the inner sound current) and the Sikh *anhad shabad*: both are practices of
+listening inward, and the inner-sound techniques in the workbook are their
+entry. The practice is real. The promises are not ours to make.
 
 ## If something goes wrong
 

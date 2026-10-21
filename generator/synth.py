@@ -310,11 +310,13 @@ def harner_callback(n_total, start, sr=SR, rng=None, gain=1.0, fast_rate=8.0, fa
     return bus, t
 
 
-def pututu_cluster(sr=SR, f0=306.22, offsets=(0.0, 3.9, 7.83), dur=14.0, gain=1.0, rng=None):
+def pututu_cluster(sr=SR, f0=340.25, offsets=(0.0, 3.9, 7.83), dur=14.0, gain=1.0, rng=None):
     """Chavín-style conch (pututu) cluster: several Strombus trumpets whose
-    fundamentals lie within a few Hz of each other (measured 272-340 Hz, second
-    mode ~2×) produce strong slow beats when blown together (Cook et al. 2010,
-    Kolar 2014).  Breathy, with a swell, placed as the 'upper-world' call."""
+    fundamentals lie within a few Hz of each other (measured 272-340 Hz by
+    Cook et al. 2010) produce strong slow beats when blown together (Kolar
+    2014).  340.25 Hz (5:2 of Om) is the top of the measured range and sits
+    one critical band from both the 272 and 408 Hz binaural carriers.
+    Breathy, with a swell, placed as the 'upper-world' call."""
     rng = rng or np.random.default_rng(13)
     n = int(dur * sr)
     t = np.arange(n) / sr
@@ -332,14 +334,17 @@ def pututu_cluster(sr=SR, f0=306.22, offsets=(0.0, 3.9, 7.83), dur=14.0, gain=1.
     return gain * out / (np.max(np.abs(out)) + 1e-12)
 
 
-def chamber_drone_block(acc, t_block, f0=108.88, sr=SR, n_harm=9):
+def chamber_drone_block(acc, t_block, f0=102.08, sr=SR, n_harm=9):
     """Male-register 'stone chamber' drone (Jahn, Devereux & Ibison 1996 found
     95-120 Hz resonances in Neolithic chambers; the Ħal Saflieni Hypogeum
-    resonates near 114 Hz).  108.88 Hz is the pure 5:4 below the 136.1 Hz Om,
-    so it sits inside the tonal system.  Block renderer with phase carry."""
+    resonates near 114 Hz).  102.08 Hz is the pure 4:3 below the 136.1 Hz Om
+    (a fifth above the 68 Hz didgeridoo), inside the measured range and the
+    tonal system.  Only harmonics 1, 5 and 7 sound (hollow, clarinet-like):
+    the even harmonics would land on the 204 Hz pulse carrier and the 408 Hz
+    binaural carrier, and the 3rd within a critical band of 272 Hz."""
     freqs = f0 * np.arange(1, n_harm + 1)[:, None] * np.ones((1, len(t_block)))
     ph = acc.advance(freqs, sr)
-    w = np.array([1.0, 0.5, 0.33, 0.2, 0.16, 0.1, 0.07, 0.05, 0.03])[:n_harm, None]
+    w = np.array([1.0, 0.0, 0.0, 0.0, 0.12, 0.0, 0.05, 0.0, 0.0])[:n_harm, None]
     slow = 1.0 + 0.15 * np.sin(TWO_PI * 0.05 * t_block + np.arange(n_harm)[:, None] * 0.9)
     return np.sum(w * slow * np.sin(ph), axis=0)
 
@@ -472,10 +477,17 @@ class AdditiveDrone:
     Rendered block-wise with phase carry so a 50-minute drone has no seams.
     """
 
-    def __init__(self, f0, n_harm=36, rolloff=0.85, sr=SR):
+    def __init__(self, f0, n_harm=36, rolloff=0.85, sr=SR, notch=(), notch_gain=0.08):
+        """notch: harmonic numbers to attenuate (× notch_gain).  Used to keep a
+        drone's harmonics off the binaural carriers: a steady tone at exactly a
+        carrier's frequency in both ears turns part of the binaural beat into a
+        half-rate monaural beat (carrier f±b/2 against the drone's f)."""
         self.f0 = f0
         self.h = np.arange(1, n_harm + 1, dtype=np.float64)
         self.base = 1.0 / (self.h ** rolloff)
+        for k in notch:
+            if 1 <= k <= n_harm:
+                self.base[k - 1] *= notch_gain
         self.acc = PhaseAcc(n_harm)
         self.sr = sr
 

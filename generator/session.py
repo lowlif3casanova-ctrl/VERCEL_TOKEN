@@ -52,8 +52,13 @@ TONE = {k: OM * v for k, v in R.items()}
 GYUTO = OM / 2.0          # 68.05 Hz: Gyuto chant fundamentals sit at ~60-75 Hz
 BONSHO = 137.8            # measured Hōjōbō temple bell (fits the Om centre)
 SOLFEGGIO_963 = 963.0     # Horowitz's "crown/pineal" tone: used once, ceremonially, in the clear
-# just-intonation chakra ladder transposed onto the Om octave (Goldman-style C256 set)
-CHAKRA_LADDER = [272.2 * r for r in (1.0, 9 / 8, 5 / 4, 4 / 3, 3 / 2, 5 / 3, 15 / 8)]
+# Bowl pitches: pure ratios of Om chosen to sit at least one critical band (ERB) away from
+# every binaural carrier (136.1 / 272.2 / 408.3 Hz) so a ringing bowl never masks the beat.
+# ERB ≈ 24.7·(4.37·f/1000 + 1): 39 Hz at 136, 54 Hz at 272, 68 Hz at 408 → keep clear of
+# 97-175, 218-326 and 340-476 Hz.
+BOWL = dict(ma=TONE["ma"], pa=TONE["pa"], ga2=OM * 5 / 2, ni2=OM * 15 / 4, re3=OM * 9 / 2, ga3=OM * 5, octave3=OM * 6)
+# seven-bowl ascent for the Ajna stage (4:3, 3:2, 5:2, 15:4, 9:2, 5:1, 6:1)
+CHAKRA_LADDER = [BOWL["ma"], BOWL["pa"], BOWL["ga2"], BOWL["ni2"], BOWL["re3"], BOWL["ga3"], BOWL["octave3"]]
 # Greek seven-vowel / seven-planet ladder (Demetrius, PGM, Discourse on the Eighth and Ninth)
 SEVEN_VOWELS = [("A", TONE["sa"]), ("E", TONE["re"]), ("EH", TONE["ga"]), ("I", TONE["ma"]),
                 ("O", TONE["pa"]), ("U", TONE["dha"]), ("OM", TONE["ni"])]
@@ -110,27 +115,27 @@ def design_full():
              gain=[(0, 0)] + sum([[(s, 0), (s + 20, 0.055), (s + 70, 0.055), (s + 90, 0)]
                                   for s in (31.8 * MIN, 34.3 * MIN, 36.6 * MIN, 41.0 * MIN)], [])),
     ]
-    drums = [dict(start=11.5 * MIN, end=20.5 * MIN, rate_hz=4.25, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=25)]
+    drums = [dict(start=11.5 * MIN, end=20.5 * MIN, rate_hz=4.25, gain=0.42, accent_every=0, humanize_ms=7, ramp_s=25)]
     callback_at = 43 * MIN + 5
     bowls = []
-    # Threshold: Om bowls, right-leaning
-    bowls += [dict(t=60, f0=OM, gain=0.42, pan=0.25, split=8.0), dict(t=180, f0=OM, gain=0.42, pan=0.2, split=8.0)]
-    # Descent: fifth and octave, wah at Schumann rate
-    bowls += [dict(t=6 * MIN, f0=TONE["pa"], gain=0.36, pan=-0.3, split=7.83), dict(t=8.5 * MIN, f0=TONE["octave"], gain=0.36, pan=0.3, split=7.83)]
+    # Threshold: the fifth and the fourth of Om, right-leaning
+    bowls += [dict(t=60, f0=BOWL["pa"], gain=0.42, pan=0.25, split=8.0), dict(t=180, f0=BOWL["ma"], gain=0.42, pan=0.2, split=8.0)]
+    # Descent: fifth and major-tenth, wah at the Schumann rate
+    bowls += [dict(t=6 * MIN, f0=BOWL["pa"], gain=0.36, pan=-0.3, split=7.83), dict(t=8.5 * MIN, f0=BOWL["ga2"], gain=0.36, pan=0.3, split=7.83)]
     # Drum Gate
-    bowls += [dict(t=15 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.25), dict(t=18 * MIN, f0=TONE["pa"], gain=0.34, pan=0.25, split=4.25)]
-    # Ajna: chakra ladder in just intonation, each wah-ing at 6 Hz
+    bowls += [dict(t=15 * MIN, f0=BOWL["ma"], gain=0.36, pan=-0.2, split=4.25), dict(t=18 * MIN, f0=BOWL["pa"], gain=0.34, pan=0.25, split=4.25)]
+    # Ajna: seven-bowl ascent, each wah-ing at 6 Hz
     for i, f in enumerate(CHAKRA_LADDER):
         bowls.append(dict(t=21.6 * MIN + i * 55, f0=f, gain=0.34 - 0.012 * i, pan=(-1) ** i * 0.35, split=6.0))
     # No-Time
-    bowls += [dict(t=32 * MIN, f0=OM, gain=0.34, pan=-0.2, split=3.0), dict(t=35 * MIN, f0=TONE["octave"], gain=0.32, pan=0.2, split=2.13)]
+    bowls += [dict(t=32 * MIN, f0=BOWL["ma"], gain=0.34, pan=-0.2, split=3.0), dict(t=35 * MIN, f0=BOWL["ga2"], gain=0.32, pan=0.2, split=2.13)]
     # Crown
-    bowls += [dict(t=38 * MIN, f0=TONE["octave"], gain=0.36, pan=0.25, split=7.83), dict(t=40 * MIN, f0=3 * OM, gain=0.3, pan=-0.25, split=7.83),
-              dict(t=41.5 * MIN, f0=4 * OM, gain=0.26, pan=0.2, split=7.83), dict(t=42.5 * MIN, f0=OM, gain=0.4, pan=0.0, split=7.83)]
-    # Return: the single 963 Hz strike in the clear, then Om bowls home
+    bowls += [dict(t=38 * MIN, f0=BOWL["ga2"], gain=0.36, pan=0.25, split=7.83), dict(t=40 * MIN, f0=BOWL["ni2"], gain=0.3, pan=-0.25, split=7.83),
+              dict(t=41.5 * MIN, f0=BOWL["ga3"], gain=0.26, pan=0.2, split=7.83), dict(t=42.5 * MIN, f0=BOWL["pa"], gain=0.4, pan=0.0, split=7.83)]
+    # Return: the single 963 Hz strike in the clear, then the fifth and fourth home
     bowls += [dict(t=45 * MIN + 20, f0=SOLFEGGIO_963, gain=0.3, pan=0.15, split=None),
-              dict(t=46 * MIN, f0=OM, gain=0.42, pan=0.2, split=10.0), dict(t=46.8 * MIN, f0=OM, gain=0.42, pan=0.2, split=10.0),
-              dict(t=47.5 * MIN, f0=OM, gain=0.44, pan=0.2, split=None)]
+              dict(t=46 * MIN, f0=BOWL["pa"], gain=0.42, pan=0.2, split=10.0), dict(t=46.8 * MIN, f0=BOWL["ma"], gain=0.42, pan=0.2, split=10.0),
+              dict(t=47.5 * MIN, f0=BOWL["pa"], gain=0.44, pan=0.2, split=None)]
     bonsho = [dict(t=12, gain=0.36), dict(t=4 * MIN, gain=0.34), dict(t=11 * MIN, gain=0.34), dict(t=21 * MIN, gain=0.34),
               dict(t=29 * MIN, gain=0.32), dict(t=37 * MIN, gain=0.36), dict(t=43 * MIN, gain=0.34)]
     tingsha = [dict(t=8, gain=0.22), dict(t=2 * MIN, gain=0.18), dict(t=21 * MIN + 3, gain=0.16), dict(t=37 * MIN + 3, gain=0.18),
@@ -142,7 +147,7 @@ def design_full():
     drones = dict(
         tanpura=dict(f0=OM, gain=[(0, 0), (40, 0.16), (42.5 * MIN, 0.16), (45 * MIN, 0.0)]),
         # Neolithic-chamber register (108.88 Hz = 5:4 below Om), heavily reverberant, under the drum journey
-        chamber=dict(f0=OM * 4 / 5, gain=[(0, 0), (11.5 * MIN, 0), (13 * MIN, 0.07), (20 * MIN, 0.07), (21 * MIN, 0)]),
+        chamber=dict(f0=OM * 3 / 4, gain=[(0, 0), (11.5 * MIN, 0), (13 * MIN, 0.07), (20 * MIN, 0.07), (21 * MIN, 0)]),
         gyuto=dict(f0=GYUTO, gain=[(0, 0), (4.8 * MIN, 0), (6 * MIN, 0.10), (10.5 * MIN, 0.10), (11.5 * MIN, 0),
                                    (37.5 * MIN, 0), (38.5 * MIN, 0.09), (42 * MIN, 0.09), (43 * MIN, 0)],
                    # Smith/Stevens/Tomlinson 1967: the Gyuto 'chord' lifts the 5th and 10th harmonics
@@ -177,6 +182,57 @@ def design_full():
 
 
 # ----------------------------------------------------------------------------
+# Sleep variant (40 min): the full arc to the floor, then stays there and fades.
+# No call-back, no 40 Hz cues, no thunders, no re-alerting ramp.
+# ----------------------------------------------------------------------------
+def design_sleep():
+    base = design_full()
+    D = 40 * MIN
+    stages = [s for s in base["stages"] if s["name"] in ("Threshold", "Descent", "Drum Gate", "Ajna")]
+    stages.append(_stage("No-Time (sleep)", 29, 40, "Outer carriers settle at 3.0 then 2.13 Hz and stay there; the Om carrier holds 10 Hz alpha until 35:00 then follows down; every layer fades out over the last three minutes so the session ends in silence at the floor.",
+                         "Monroe Focus 15 'no time' / Yoga Nidra sleep variant"))
+    beat = [(0, 10.0), (4 * MIN, 10.0), (9 * MIN, 7.83), (11 * MIN, 7.83), (13.5 * MIN, 4.25),
+            (21 * MIN, 4.25), (23 * MIN, 6.0), (29 * MIN, 6.0), (31 * MIN, 3.0), (33 * MIN, 3.0), (34.5 * MIN, 2.13), (D, 2.13)]
+    beat_om = [p for p in beat if p[0] <= 29 * MIN] + [(31 * MIN, 10.0), (35 * MIN, 10.0), (38 * MIN, 2.13), (D, 2.13)]
+    fade = [(36.5 * MIN, 1.0), (39.5 * MIN, 0.0)]
+
+    def faded(lane, end_level):
+        """keep a lane, then fade it to zero between 36:30 and 39:30"""
+        pts = [p for p in lane if p[0] <= 36.5 * MIN]
+        last = S.Lane(lane).at(np.array([36.5 * MIN]))[0]
+        return pts + [(36.5 * MIN, float(last)), (39.5 * MIN, 0.0), (D, 0.0)]
+
+    carriers = [
+        dict(hz=3 * OM, gain=faded([(0, 0), (25, 0.17), (36 * MIN, 0.17)], 0), beat=None),
+        dict(hz=2 * OM, gain=faded([(0, 0), (25, 0.12), (36 * MIN, 0.12)], 0), beat=None),
+        dict(hz=OM,     gain=faded([(0, 0), (25, 0.10), (36 * MIN, 0.10)], 0), beat=beat_om),
+    ]
+    isochronic = [dict(name="iso_theta", hz=TONE["pa"], rate="beat",
+                       gain=[(0, 0), (12.5 * MIN, 0), (14 * MIN, 0.05), (20.5 * MIN, 0.05), (21.5 * MIN, 0),
+                             (29.5 * MIN, 0), (31 * MIN, 0.04), (35 * MIN, 0.04), (37 * MIN, 0)])]
+    bowls = [b for b in base["bowls"] if b["t"] < 35 * MIN]
+    bonsho = [b for b in base["bonsho"] if b["t"] < 30 * MIN]
+    tingsha = [b for b in base["tingsha"] if b["t"] < 22 * MIN]
+    dungchen = [d for d in base["dungchen"] if d["t"] < 34 * MIN]
+    drones = dict(
+        tanpura=dict(f0=OM, gain=faded([(0, 0), (40, 0.16), (36 * MIN, 0.16)], 0)),
+        chamber=base["drones"]["chamber"],
+        gyuto=dict(f0=GYUTO, gain=[(0, 0), (4.8 * MIN, 0), (6 * MIN, 0.10), (10.5 * MIN, 0.10), (11.5 * MIN, 0)],
+                   formant=[(0, 5.0), (6 * MIN, 5.0), (7.5 * MIN, 10.0), (9 * MIN, 5.0), (10.5 * MIN, 10.0), (11.5 * MIN, 5.0)]),
+        didgeridoo=base["drones"]["didgeridoo"],
+    )
+    chant = [c for c in base["chant"] if c["start"] < 25 * MIN]
+    breath = dict(rate=[(0, 8 / 60), (3 * MIN, 6 / 60), (D, 6 / 60)],
+                  gain=[(0, 0), (30, 0.06), (11 * MIN, 0.06), (13 * MIN, 0.0)])
+    pink = dict(gain=faded([(0, 0), (15, 0.011), (36 * MIN, 0.011)], 0))
+    vibration = dict(rate_hz=0.2, depth=[(0, 0), (30.5 * MIN, 0), (33 * MIN, 0.3), (36 * MIN, 0.3), (38 * MIN, 0)])
+    return dict(name="Pineal Gateway — sleep variant (40 min)", duration=D, stages=stages, beat=beat, carriers=carriers,
+                isochronic=isochronic, drums=base["drums"], callback_at=None, bowls=bowls, bonsho=bonsho, tingsha=tingsha,
+                dungchen=dungchen, thunder=[], pututu=[], drones=drones, chant=chant, breath=breath, pink=pink,
+                air=dict(gain=[(0, 0)]), vibration=vibration)
+
+
+# ----------------------------------------------------------------------------
 # Daily 15-minute session
 # ----------------------------------------------------------------------------
 def design_daily():
@@ -189,7 +245,7 @@ def design_daily():
         _stage("Return", 12.5, 15, "Call-back; 7.83 -> 14.1 Hz; 963 Hz bowl in the clear", "call-back / SMR"),
     ]
     beat = [(0, 10.0), (2 * MIN, 10.0), (4.5 * MIN, 6.0), (5 * MIN, 6.0), (6 * MIN, 4.25), (10 * MIN, 4.25),
-            (10.8 * MIN, 3.0), (12.3 * MIN, 3.0), (13.2 * MIN, 7.83), (14.6 * MIN, 14.1), (D, 14.1)]
+            (10.8 * MIN, 3.0), (12.3 * MIN, 3.0), (13.0 * MIN, 7.83), (14.7 * MIN, 14.1), (D, 14.1)]
     beat_om = [p for p in beat if not (10.8 * MIN <= p[0] <= 12.3 * MIN)] + [(10.8 * MIN, 10.0), (12.3 * MIN, 10.0)]
     beat_om.sort()
     carriers = [
@@ -203,15 +259,15 @@ def design_daily():
         dict(name="iso_gamma", hz=4 * OM, rate=[(0, 40.0)],
              gain=[(0, 0), (10 * MIN, 0), (11 * MIN, 0.055), (12.3 * MIN, 0.055), (12.9 * MIN, 0)]),
     ]
-    drums = [dict(start=5.3 * MIN, end=9.8 * MIN, rate_hz=4.25, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=15)]
+    drums = [dict(start=5.3 * MIN, end=9.8 * MIN, rate_hz=4.25, gain=0.42, accent_every=0, humanize_ms=7, ramp_s=15)]
     callback_at = 12.55 * MIN          # ends ~13:55 with the shorter 30 s grounding used in the daily version
-    bowls = [dict(t=20, f0=OM, gain=0.42, pan=0.25, split=8.0), dict(t=80, f0=OM, gain=0.4, pan=0.2, split=8.0),
-             dict(t=3.5 * MIN, f0=TONE["pa"], gain=0.36, pan=-0.3, split=6.0), dict(t=7.5 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.25)]
-    for i, f in enumerate((CHAKRA_LADDER[0], CHAKRA_LADDER[4], CHAKRA_LADDER[6])):
+    bowls = [dict(t=20, f0=BOWL["pa"], gain=0.42, pan=0.25, split=8.0), dict(t=80, f0=BOWL["ma"], gain=0.4, pan=0.2, split=8.0),
+             dict(t=3.5 * MIN, f0=BOWL["ga2"], gain=0.36, pan=-0.3, split=6.0), dict(t=7.5 * MIN, f0=BOWL["ma"], gain=0.36, pan=-0.2, split=4.25)]
+    for i, f in enumerate((CHAKRA_LADDER[0], CHAKRA_LADDER[2], CHAKRA_LADDER[4])):
         bowls.append(dict(t=10.2 * MIN + i * 40, f0=f, gain=0.32, pan=(-1) ** i * 0.3, split=3.0))
     # 963 Hz bowl once the tanpura has faded (13:36) and the grounding strokes have ended (~13:55)
     bowls += [dict(t=14.0 * MIN, f0=SOLFEGGIO_963, gain=0.28, pan=0.15, split=None),
-              dict(t=14.35 * MIN, f0=OM, gain=0.42, pan=0.2, split=10.0), dict(t=14.6 * MIN, f0=OM, gain=0.44, pan=0.2, split=None)]
+              dict(t=14.35 * MIN, f0=BOWL["pa"], gain=0.42, pan=0.2, split=10.0), dict(t=14.6 * MIN, f0=BOWL["ma"], gain=0.44, pan=0.2, split=None)]
     bonsho = [dict(t=10, gain=0.34), dict(t=2 * MIN, gain=0.32), dict(t=5 * MIN, gain=0.32), dict(t=10 * MIN, gain=0.32), dict(t=12.5 * MIN, gain=0.32)]
     tingsha = [dict(t=6, gain=0.22), dict(t=10 * MIN + 3, gain=0.16), dict(t=14 * MIN + 50, gain=0.22), dict(t=14 * MIN + 53, gain=0.2)]
     dungchen = [dict(t=4.2 * MIN, gain=0.22), dict(t=10.3 * MIN, gain=0.22)]
@@ -219,7 +275,7 @@ def design_daily():
     pututu = [dict(t=11.4 * MIN, gain=0.2, pan=-0.4), dict(t=12.1 * MIN, gain=0.18, pan=0.4)]
     drones = dict(
         tanpura=dict(f0=OM, gain=[(0, 0), (30, 0.16), (12.9 * MIN, 0.16), (13.6 * MIN, 0.0)]),
-        chamber=dict(f0=OM * 4 / 5, gain=[(0, 0), (5.5 * MIN, 0), (6.5 * MIN, 0.07), (9.5 * MIN, 0.07), (10.2 * MIN, 0)]),
+        chamber=dict(f0=OM * 3 / 4, gain=[(0, 0), (5.5 * MIN, 0), (6.5 * MIN, 0.07), (9.5 * MIN, 0.07), (10.2 * MIN, 0)]),
         gyuto=dict(f0=GYUTO, gain=[(0, 0), (2.2 * MIN, 0), (3 * MIN, 0.10), (4.8 * MIN, 0.10), (5.5 * MIN, 0)],
                    formant=[(0, 5.0), (3 * MIN, 5.0), (4 * MIN, 10.0), (5 * MIN, 5.0)]),
         didgeridoo=dict(f0=GYUTO, gain=[(0, 0), (5.5 * MIN, 0), (6.5 * MIN, 0.10), (9.5 * MIN, 0.10), (10.2 * MIN, 0)], breath_hz=0.55),
@@ -268,17 +324,19 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
 
     dr = design["drones"]
     # tanpura: Sa string (136.1) plus the Pa string (204.15), the 5-8-8-1 tuning's fifth
-    tanpura = S.AdditiveDrone(dr["tanpura"]["f0"], n_harm=28, rolloff=1.0)
-    tanpura_pa = S.AdditiveDrone(dr["tanpura"]["f0"] * 1.5, n_harm=20, rolloff=1.05)
+    # harmonics that would sit exactly on the binaural carriers (272.2, 408.3, 544.4 Hz)
+    # are notched so the drones never convert the beat into a half-rate monaural wobble
+    tanpura = S.AdditiveDrone(dr["tanpura"]["f0"], n_harm=28, rolloff=1.0, notch=(2, 3, 4))
+    tanpura_pa = S.AdditiveDrone(dr["tanpura"]["f0"] * 1.5, n_harm=20, rolloff=1.05, notch=(2,))
     tan_gain = S.Lane(dr["tanpura"]["gain"])
     tan_lfo_rates = rng.uniform(0.03, 0.25, size=28)
     tan_lfo_phase = rng.uniform(0, S.TWO_PI, size=28)
     pa_lfo_rates = rng.uniform(0.03, 0.2, size=20)
     pa_lfo_phase = rng.uniform(0, S.TWO_PI, size=20)
-    gyuto = S.AdditiveDrone(dr["gyuto"]["f0"], n_harm=36, rolloff=0.8)
+    gyuto = S.AdditiveDrone(dr["gyuto"]["f0"], n_harm=36, rolloff=0.8, notch=(2, 3, 4, 6, 8))
     gy_gain = S.Lane(dr["gyuto"]["gain"])
     gy_formant = S.Lane(dr["gyuto"]["formant"])
-    didg = S.AdditiveDrone(dr["didgeridoo"]["f0"], n_harm=36, rolloff=0.75)
+    didg = S.AdditiveDrone(dr["didgeridoo"]["f0"], n_harm=36, rolloff=0.75, notch=(2, 3, 4, 6, 8))
     dg_gain = S.Lane(dr["didgeridoo"]["gain"])
     dg_breath = dr["didgeridoo"]["breath_hz"]
     chamber_acc = S.PhaseAcc(9)
@@ -315,7 +373,10 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
             rate = beat if iso_rate[k] is None else iso_rate[k].at(t)
             ph_c = iso_acc[k][0].advance(np.full(b - a, iso["hz"]), sr)
             ph_g = iso_acc[k][1].advance(rate, sr)
-            gate = (0.5 - 0.5 * np.cos(ph_g)) ** (3.0 if iso["name"] == "iso_gamma" else 2.0)
+            # theta pulse: raised-cosine squared (sidebands at ±b, ±2b only).  Gamma: pure sinusoidal
+            # AM so the only sidebands are at ±40 Hz (504 / 584 Hz), a critical band clear of the
+            # 408 Hz primary carrier; a sharper gate would put a ±120 Hz sideband 16 Hz from it.
+            gate = (0.5 - 0.5 * np.cos(ph_g)) ** (1.0 if iso["name"] == "iso_gamma" else 2.0)
             sig = (g * gate * np.sin(ph_c)).astype(np.float32)
             dry[0, a:b] += sig
             dry[1, a:b] += sig
@@ -405,7 +466,7 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
         S.add_at(wet, int(ev["t"] * sr), S.pan(sig, -0.1).astype(np.float32))
     for i, ev in enumerate(design["thunder"]):
         sig = S.thunder_swell(sr, gain=ev["gain"], rng=np.random.default_rng(seed + 600 + i))
-        S.add_at(wet, int(ev["t"] * sr), S.pan(sig, (-1) ** i * 0.5).astype(np.float32))
+        S.add_at(wet, int(ev["t"] * sr), S.pan(sig, (-1) ** i * 0.25).astype(np.float32))
     for i, ev in enumerate(design.get("pututu", [])):
         sig = S.pututu_cluster(sr, gain=ev["gain"], rng=np.random.default_rng(seed + 700 + i))
         S.add_at(wet, int(ev["t"] * sr), S.pan(sig, ev["pan"]).astype(np.float32))
@@ -494,7 +555,7 @@ def encode(wav, out_base, log=print):
         log(f"ffmpeg encode skipped: {e}")
 
 
-DESIGNS = {"full": design_full, "daily": design_daily}
+DESIGNS = {"full": design_full, "daily": design_daily, "sleep": design_sleep}
 
 if __name__ == "__main__":
     variant = sys.argv[1] if len(sys.argv) > 1 else "full"

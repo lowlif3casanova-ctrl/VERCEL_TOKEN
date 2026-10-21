@@ -28,27 +28,53 @@ Everything in the session is built on **136.10 Hz**.
 | Hz | ratio | role |
 |---|---|---|
 | 68.05 | 1:2 | Gyuto / didgeridoo / dungchen register (Gyuto fundamentals measured 60–75 Hz; Arnhem Land yidaki players favour C#2 ≈ 69 Hz) |
-| 108.88 | 4:5 | stone-chamber drone (Neolithic chambers resonate at 95–120 Hz; Ħal Saflieni ≈ 114 Hz) |
-| 136.10 | 1:1 | Om; tanpura; bowls; third binaural carrier |
+| 102.08 | 3:4 | stone-chamber drone, a fifth above the didgeridoo (Neolithic chambers resonate at 95–120 Hz; Ħal Saflieni ≈ 114 Hz) |
+| 136.10 | 1:1 | Om; tanpura; third binaural carrier |
 | 153.11 | 9:8 | vowel ladder step 2 |
 | 170.13 | 5:4 | vowel ladder step 3 |
-| 181.47 | 4:3 | vowel ladder step 4 |
-| 204.15 | 3:2 | vowel ladder step 5; theta isochronic carrier; "OM" (throat) in A-OM-HUM; bowls |
+| 181.47 | 4:3 | vowel ladder step 4; bowl |
+| 204.15 | 3:2 | vowel ladder step 5; tanpura Pa string; theta isochronic carrier; "OM" (throat) in A-OM-HUM; bowl |
 | 229.67 | 27:16 | vowel ladder step 6 |
 | 255.19 | 15:8 | vowel ladder step 7 |
-| 272.20 | 2:1 | second binaural carrier; "A" (forehead) in A-OM-HUM; chakra-ladder root; bowls |
-| 306.22 | 9:4 | pututu conch cluster centre (Chavín pututus measured 272–340 Hz) |
+| 272.20 | 2:1 | second binaural carrier; "A" (forehead) in A-OM-HUM |
+| 340.25 | 5:2 | pututu conch cluster centre (Chavín pututus measured 272–340 Hz); bowl |
 | 408.30 | 3:1 | **primary binaural carrier**: inside the 350–500 Hz region where Licklider (1950) found the widest audible beat range and Oster (1973) the clearest percept |
+| 510.38 | 15:4 | bowl |
 | 544.40 | 4:1 | 40 Hz gamma isochronic carrier |
+| 612.45 / 680.50 / 816.60 | 9:2 / 5:1 / 6:1 | bowls |
 | 963.00 | — | the one Solfeggio tone, struck once as a bowl, in the clear, in the Return |
 
-The chakra bowl ladder in the Ajna stage is the just-intonation set popularised
-by Jonathan Goldman (C256 / D288 / E320 / F341.3 / G384 / A426.7 / B480)
-transposed onto the Om octave: **272.2 / 306.2 / 340.3 / 362.9 / 408.3 / 453.7 /
-510.4 Hz**. **None** as physiology, **traditional** as practice; it was chosen
-over the Solfeggio ladder because the Solfeggio tones (396…963, mostly 111 Hz
-apart and in no harmonic relation to one another) clash with a C# drone,
-whereas this ladder is consonant with everything else in the session.
+The ratios are Pythagorean (9:8, 4:3, 3:2, 27:16, 2:1, 3:1, 9:2, 6:1) and just
+intonation (5:4, 15:8, 5:2, 15:4, 5:1); the vowel ladder therefore mixes the
+Timaeus scale with Ptolemy's thirds and is labelled "pure-ratio", not
+"Pythagorean".
+
+### The critical-band rule
+
+A sustained tone at exactly a binaural carrier's frequency, present in both
+ears, turns part of the binaural beat into a half-rate monaural wobble (the
+carrier at f ± beat/2 beats against the steady f). A tone within one critical
+band (ERB ≈ 24.7·(4.37·f/1000 + 1): about 39 Hz at 136 Hz, 54 Hz at 272 Hz,
+68 Hz at 408 Hz) adds roughness in the same auditory filter. So:
+
+- the tanpura's 2nd, 3rd and 4th harmonics (272.2, 408.3, 544.4 Hz), the Pa
+  string's 2nd (408.3), and the Gyuto/didgeridoo's 2nd, 3rd, 4th, 6th and 8th
+  harmonics (136.1, 204.15, 272.2, 408.3, 544.4) are attenuated by 22 dB;
+- the chamber drone sounds only its 1st, 5th and 7th harmonics;
+- no bowl is pitched on a carrier: the bowl set is **181.47 / 204.15 / 340.25 /
+  510.38 / 612.45 / 680.50 / 816.60 Hz** (4:3, 3:2, 5:2, 15:4, 9:2, 5:1, 6:1), all
+  at least one ERB from 136.1, 272.2 and 408.3 Hz;
+- the conch cluster sits at 340.25 Hz, one ERB from both 272.2 and 408.3;
+- the 40 Hz gamma is sinusoidal amplitude modulation (sidebands only at 504
+  and 584 Hz); a sharper gate would put a sideband 16 Hz from the primary carrier.
+
+The seven-bowl ascent in the Ajna stage is that bowl set in rising order.
+Jonathan Goldman's just-intonation chakra ladder (C256 … B480) was the model,
+but transposed onto the Om octave two of its steps land on the carriers, so
+the ascent uses the carrier-clear ratios instead. **None** as physiology,
+**traditional** as practice; the Solfeggio ladder was rejected because its
+tones (396…963, mostly 111 Hz apart and in no harmonic relation to one
+another) clash with a C# drone.
 
 ## 2. The binaural layer (headphones required)
 
@@ -108,12 +134,15 @@ their own small steady-state response.
 | theta pulse | 204.15 Hz | follows the beat ladder | 12:30–21:30 and 29:30–37:00 | an amplitude-modulated pulse drives the auditory steady-state response more strongly than a binaural beat (Orozco Perez 2020, Will & Berg 2007); it reinforces the drum plateau and the floor |
 | gamma cues | 544.40 Hz | 40 Hz | four 90-second cues at 31:48, 34:18, 36:36 and 41:00 | the ASSR is largest near 40 Hz (Galambos 1981, Picton 2003); 40 Hz stimulation during REM raised dream lucidity (Voss 2014, electrical, 30-second bursts, single study); the monks' gamma (Lutz 2004) is 25–42 Hz. Delivered as four cues rather than a bed: the one human lucidity result used short bursts; the 40 Hz safety data (Chan 2022; Martorell 2019 in mice) are for 1-hour continuous click trains, far more than this session gives to gamma; a continuous pulse would compete with the theta/delta floor; and the lineage treats gamma as a "clarity" signal |
 
-Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click.
+Gate shape: raised-cosine squared for the theta pulse and pure sinusoidal
+amplitude modulation for the gamma cues, so the pulses have no click and the
+gamma sidebands stay a critical band clear of the primary carrier.
 
 ## 4. The drum, the call-back, the thunder
 
-- **Frame drum** 11:30–20:30 at **4.25 Hz (255 bpm)**, unaccented except a
-  light every-fourth stroke, humanised by ±7 ms. Synthesised: pitch glide
+- **Frame drum** 11:30–20:30 at **4.25 Hz (255 bpm)**, strictly unaccented
+  and isochronous as in the core-shamanism recordings, humanised by ±7 ms.
+  Synthesised: pitch glide
   1.9× → 1× over 25 ms, two membrane modes (f and 1.59 f), skin-slap noise.
   **Moderate**: Neher 1961/62 (auditory driving at 3–8 Hz), Maxfield 1990
   (4–4.5 Hz most theta-inducing, n = 12), Gingras 2014 (the journey
@@ -124,11 +153,13 @@ Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click
   re-grounding strokes at 1.2 Hz. The fast passage followed by slow grounding
   is the Foundation for Shamanic Studies practice; the "four sevens" framing is
   a modern practitioner convention, included because listeners know it.
-- **Thunder** (distant, band-limited brown noise, never loud): one swell opens
-  the Drum Gate at 10:54; three pass at 35:24–36:30 at the floor of No-Time.
-  **Traditional**: the Bardo Thödol's *chönyid* bardo, where the natural sound
-  of reality "reverberates like a thousand thunders" and the instruction is to
-  recognise it as one's own mind and not to fear it.
+- **Thunder** (distant, band-limited brown noise, never loud, only slightly
+  off-centre): one swell opens the Drum Gate at 10:54; three pass at
+  35:24–36:30 at the floor of No-Time. **Traditional, adapted**: the Bardo
+  Thödol's *chönyid* bardo, where the natural sound of reality "reverberates
+  like a thousand thunders" and the instruction is to recognise it as one's own
+  mind and not to fear it. The Bardo Thödol is a text read to the dying; its
+  use here as imagery for a relaxed listener is the designers' adaptation.
 - **Dungchen swells** (68.05 Hz long-horn pedal tones, 28 s crescendos) at 9:18,
   30:00, 33:30, 36:00. **Traditional / secondary measurement**: a 1.7 m
   dungchen sounds a fundamental near 58 Hz (B♭1); 68.05 Hz is the nearest
@@ -140,12 +171,13 @@ Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click
   2011; Inácio, Henrique & Antunes 2006): partials at 1 : 2.83 : 5.42 : 8.77 :
   12.87, each mode a doublet that beats slowly, higher modes decaying faster,
   a 6 ms strike transient and a rim-singing swell. **Measured** acoustics.
-  The fundamental doublet of each bowl is split at the beat rate of the plateau
-  its stage is heading for (8 Hz for the Threshold bowls under a 10 Hz beat,
-  7.83 in the Descent, 4.25 in the Drum Gate, 6 in Ajna, 3 / 2.13 in No-Time
-  against the outer carriers, 7.83 in the Crown, 10 in the Return), so bowls
-  struck during a glide "wah" at the target rate rather than the instantaneous
-  one — the same device as
+  Bowls are pitched on the fifth and fourth of Om (204.15, 181.47 Hz) and the
+  upper ratios listed in §1, never on a carrier. The fundamental doublet of
+  each bowl is split at the beat rate of the plateau its stage is heading for
+  (8 Hz for the Threshold bowls under a 10 Hz beat, 7.83 in the Descent, 4.25
+  in the Drum Gate, 6 in Ajna, 3 / 2.13 in No-Time against the outer carriers,
+  7.83 in the Crown, 10 in the Return), so bowls struck during a glide "wah"
+  at the target rate rather than the instantaneous one — the same device as
   Balinese *ombak* paired tuning and the one singing-bowl EEG study (a 6.68 Hz
   bowl beat, delta/theta rising over 5 min, n = 17). This makes the beat
   audible even on speakers.
@@ -175,7 +207,8 @@ Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click
 - **Tanpura / Om drone** at 136.10 Hz throughout (to 45:00), with the Pa
   string (204.15 Hz, the fifth of the 5-8-8-1 tuning) underneath: 28 and 20
   harmonics whose amplitudes bloom and fade on slow independent cycles (the
-  *jivari* effect of a real tanpura bridge). From 30:30 to 37:30 a 0.2 Hz (5-second)
+  *jivari* effect of a real tanpura bridge), with the harmonics that would sit
+  on the carriers notched (§1). From 30:30 to 37:30 a 0.2 Hz (5-second)
   surge rides on it — Monroe's description of the "vibrational state" as a ring
   sweeping head to toe on a roughly 5-second cycle (**anecdotal**, *Journeys Out
   of the Body*).
@@ -190,10 +223,12 @@ Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click
   so it stays in the drone's overtone register; the real instrument's vocal-tract
   resonances sit higher, at 1–2 kHz (Tarnopolsky et al. 2005, **measured**
   acoustics).
-- **Stone-chamber drone** 11:30–21:00 at 108.88 Hz, 80 % reverberant: Jahn,
+- **Stone-chamber drone** 11:30–21:00 at 102.08 Hz (a fifth above the
+  didgeridoo, 4:3 below Om), odd harmonics only, 80 % reverberant: Jahn,
   Devereux & Ibison (1996) measured 95–120 Hz resonances in six Neolithic
   chambers; Cook, Pajot & Leuchter (2008) reported a 110 Hz-specific EEG shift
-  in 30 volunteers (**weak**, unreplicated).
+  in 30 volunteers (**weak**, unreplicated). 102 Hz is inside the measured
+  range and consonant with the 68 Hz drone beneath it.
 - **Seven-vowel ladder** 21:24–28:36, rising through the pure-ratio steps
   136.10 / 153.11 / 170.13 / 181.47 / 204.15 / 229.67 / 255.19 Hz, one vowel per
   step, 50 s each: **A E Ē I O U Ō** (Α Ε Η Ι Ο Υ Ω), the vowels that Demetrius
@@ -236,6 +271,17 @@ Gate shape: raised-cosine squared (cubed for gamma), so the pulses have no click
   **joint stereo disabled** so the encoder never folds left and right (which
   would partly erase the binaural phase difference).
 
+## 7b. The three renders
+
+- **Full session (48 min)**: the arc above, ending alert at 14.1 Hz.
+- **Daily session (15 min)**: the same arc compressed (Threshold 0–2, Descent
+  2–5, Drum Gate 5–10, No-Time 10–12.5, Return 12.5–15).
+- **Sleep variant (40 min)**: the full arc to the floor, then the outer
+  carriers stay at 2.13 Hz, the Om carrier follows them down at 35:00, and
+  every layer fades to silence between 36:30 and 39:30. No call-back, no 40 Hz
+  cues, no thunders, no re-alerting ramp: for evening use when you intend to
+  sleep.
+
 ## 8. Things deliberately left out, and why
 
 - **Solfeggio ladder as a tonal bed** (clashes with the Om drone; 1999 numerology).
@@ -259,4 +305,10 @@ light, not sound; calcification is age-related and no acoustic study has
 touched it), releasing DMT, guaranteed visions, manifestation, or travel between
 dimensions or times. Those words appear in this project as the traditions'
 own frames (Monroe's Focus 15 "no time", the Bardo, the Ogdoad), which is how
-they are labelled throughout.
+they are labelled throughout. The identification of the *ajna* chakra with the
+pineal gland is itself modern: it enters through Theosophy (Blavatsky 1888,
+Leadbeater 1927) and twentieth-century yoga teachers; the classical texts
+never mention the gland. The closest living textual traditions of "travel by
+sound" are the Sant Mat / Surat Shabd Yoga practice of following the inner
+sound current and the Sikh teaching of the *anhad shabad* heard when the
+tenth gate opens; both describe listening, not a frequency.
