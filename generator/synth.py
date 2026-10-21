@@ -95,21 +95,62 @@ class PhaseAcc:
 # ----------------------------------------------------------------------------
 # Noise
 # ----------------------------------------------------------------------------
+KELLET = [
+    (0.99886, 0.0555179), (0.99332, 0.0750759), (0.96900, 0.1538520),
+    (0.86650, 0.3104856), (0.55000, 0.5329522), (-0.7616, -0.0168980),
+]
+KELLET_RMS = 3.0433   # measured RMS of the Kellet sum for unit white input (fixed, so blocks match)
+
+
 def pink_noise(n, rng):
     """Kellet's economical pink-noise filter bank (within ±0.5 dB of 1/f over
-    the audio band).  Returns unit-ish RMS float64."""
+    the audio band).  Returns unit-RMS float64 (one-shot; see PinkStream for
+    block-wise rendering with carried filter state)."""
     w = rng.standard_normal(n)
-    coefs = [
-        (0.99886, 0.0555179), (0.99332, 0.0750759), (0.96900, 0.1538520),
-        (0.86650, 0.3104856), (0.55000, 0.5329522), (-0.7616, -0.0168980),
-    ]
     out = np.zeros(n)
-    for a, c in coefs:
+    for a, c in KELLET:
         out += signal.lfilter([c], [1.0, -a], w)
     out += 0.5362 * w
     out += 0.115926 * np.concatenate(([0.0], w[:-1]))
-    out *= 0.11
-    return out / (np.std(out) + 1e-12)
+    return out / KELLET_RMS
+
+
+class PinkStream:
+    """Pink noise rendered block by block with the six one-pole states and the
+    one-sample FIR history carried across blocks, so there is no seam."""
+
+    def __init__(self, rng):
+        self.rng = rng
+        self.zi = [np.zeros(1) for _ in KELLET]
+        self.last_w = 0.0
+
+    def next(self, n):
+        w = self.rng.standard_normal(n)
+        out = np.zeros(n)
+        for k, (a, c) in enumerate(KELLET):
+            y, self.zi[k] = signal.lfilter([c], [1.0, -a], w, zi=self.zi[k])
+            out += y
+        out += 0.5362 * w
+        out += 0.115926 * np.concatenate(([self.last_w], w[:-1]))
+        self.last_w = w[-1]
+        return out / KELLET_RMS
+
+
+class BandNoiseStream:
+    """Band-passed white noise with carried SOS state and a fixed gain
+    (no per-block normalisation), for the breath pacer and the 'air' layer."""
+
+    def __init__(self, rng, lo, hi, sr=SR, order=4):
+        self.rng = rng
+        self.sos = signal.butter(order, [lo, hi], "bandpass", fs=sr, output="sos")
+        self.zi = signal.sosfilt_zi(self.sos) * 0.0
+        # calibrate the steady-state RMS once so every block has the same gain
+        probe = signal.sosfilt(self.sos, np.random.default_rng(1).standard_normal(sr * 2))
+        self.gain = 1.0 / (np.std(probe[sr // 2:]) + 1e-12)
+
+    def next(self, n):
+        y, self.zi = signal.sosfilt(self.sos, self.rng.standard_normal(n), zi=self.zi)
+        return y * self.gain
 
 
 def brown_noise(n, rng, sr=SR):
@@ -224,13 +265,21 @@ def render_drum_track(n_total, segments, sr=SR, rng=None, width=0.35):
     return bus
 
 
-def harner_callback(n_total, start, sr=SR, rng=None, gain=1.0, fast_rate=7.0, fast_dur=30.0):
-    """The Foundation for Shamanic Studies return signal: four groups of seven
-    sharp strokes, ~30 s of rapid drumming, then four groups of seven again.
+def harner_callback(n_total, start, sr=SR, rng=None, gain=1.0, fast_rate=8.0, fast_dur=30.0,
+                    ground_rate=1.2, ground_dur=60.0):
+    """Journey call-back signal.
+
+    Foundation for Shamanic Studies practice (shamanism.org/drumming; Harner's
+    1997 recording): the journey drum ends with ~30 s of markedly faster
+    drumming (7-10 Hz) followed by a minute or two of slow re-grounding beats.
+    The 'four groups of seven sharp strokes' that opens and closes the fast
+    passage here is a widespread practitioner convention (not an FSS standard)
+    and is included because many listeners already know it as 'the call-back'.
     Returns (2, n) stereo bus and the end time in seconds."""
     rng = rng or np.random.default_rng(11)
     bus = np.zeros((2, n_total), dtype=np.float32)
     hit = frame_drum_hit(sr, 1.0, np.random.default_rng(200), pitch=74.0, decay=0.17)
+    slow_hit = frame_drum_hit(sr, 1.0, np.random.default_rng(201), pitch=66.0, decay=0.26, dur=0.9)
     t = start
 
     def seven(t):
@@ -250,7 +299,49 @@ def harner_callback(n_total, start, sr=SR, rng=None, gain=1.0, fast_rate=7.0, fa
     t += 0.8
     for _ in range(4):
         t = seven(t)
+    t += 1.5
+    # slow re-grounding beats (FSS: 1-2 min at ~1-1.5 Hz), fading out
+    t_end_ground = t + ground_dur
+    t_g0 = t
+    while t < t_end_ground:
+        env = 1.0 if t - t_g0 < ground_dur * 0.6 else 0.5 + 0.5 * np.cos(np.pi * (t - t_g0 - ground_dur * 0.6) / (ground_dur * 0.4))
+        add_at(bus, int((t + rng.normal(0, 0.006)) * sr), (pan(slow_hit, 0.0) * (gain * 0.9 * env)).astype(np.float32))
+        t += 1.0 / ground_rate
     return bus, t
+
+
+def pututu_cluster(sr=SR, f0=306.22, offsets=(0.0, 3.9, 7.83), dur=14.0, gain=1.0, rng=None):
+    """Chavín-style conch (pututu) cluster: several Strombus trumpets whose
+    fundamentals lie within a few Hz of each other (measured 272-340 Hz, second
+    mode ~2×) produce strong slow beats when blown together (Cook et al. 2010,
+    Kolar 2014).  Breathy, with a swell, placed as the 'upper-world' call."""
+    rng = rng or np.random.default_rng(13)
+    n = int(dur * sr)
+    t = np.arange(n) / sr
+    out = np.zeros(n)
+    for off in offsets:
+        f = f0 + off
+        ph = TWO_PI * f * t + rng.uniform(0, TWO_PI)
+        tone = np.sin(ph) + 0.45 * np.sin(2.05 * ph + 0.4) + 0.18 * np.sin(3.1 * ph + 1.1)
+        tone *= 1.0 + 0.012 * np.sin(TWO_PI * 5.3 * t + rng.uniform(0, TWO_PI))   # lip vibrato
+        out += tone
+    breath = bandpass(rng.standard_normal(n), 900.0, 3500.0, sr, order=2)
+    out += 0.08 * breath / (np.std(breath) + 1e-9)
+    env = raised_cosine_fade(int(0.3 * n), int(0.45 * n), n)
+    out *= env
+    return gain * out / (np.max(np.abs(out)) + 1e-12)
+
+
+def chamber_drone_block(acc, t_block, f0=108.88, sr=SR, n_harm=9):
+    """Male-register 'stone chamber' drone (Jahn, Devereux & Ibison 1996 found
+    95-120 Hz resonances in Neolithic chambers; the Ħal Saflieni Hypogeum
+    resonates near 114 Hz).  108.88 Hz is the pure 5:4 below the 136.1 Hz Om,
+    so it sits inside the tonal system.  Block renderer with phase carry."""
+    freqs = f0 * np.arange(1, n_harm + 1)[:, None] * np.ones((1, len(t_block)))
+    ph = acc.advance(freqs, sr)
+    w = np.array([1.0, 0.5, 0.33, 0.2, 0.16, 0.1, 0.07, 0.05, 0.03])[:n_harm, None]
+    slow = 1.0 + 0.15 * np.sin(TWO_PI * 0.05 * t_block + np.arange(n_harm)[:, None] * 0.9)
+    return np.sum(w * slow * np.sin(ph), axis=0)
 
 
 BOWL_RATIOS = np.array([1.0, 2.83, 5.42, 8.77, 12.87])          # thin-shell law
@@ -297,8 +388,12 @@ def singing_bowl(f0, sr=SR, dur=38.0, gain=1.0, rng=None, strike=True, rim_sing=
         out[:ns] += 0.25 * burst
         out *= 1.0 - np.exp(-t / 0.003)
     if rim_sing > 0:
+        # rim-singing sustain on the SAME doublet as the fundamental, so the bowl keeps
+        # beating at split_hz (a single un-split tone would beat against the doublet at split/2)
         swell = (0.5 - 0.5 * np.cos(np.pi * np.clip(t / 6.0, 0, 1)))
-        out += rim_sing * swell * np.exp(-t / (dur * 0.6)) * np.sin(TWO_PI * f0 * t) * (0.6 + 0.4 * np.sin(TWO_PI * 0.37 * t))
+        split0 = float(split_hz) if split_hz is not None else f0 * 0.008
+        rim = 0.5 * (np.sin(TWO_PI * (f0 - split0 / 2) * t) + 0.9 * np.sin(TWO_PI * (f0 + split0 / 2) * t + 0.4))
+        out += rim_sing * swell * np.exp(-t / (dur * 0.6)) * rim * (0.6 + 0.4 * np.sin(TWO_PI * 0.37 * t))
     out *= raised_cosine_fade(0, int(2.0 * sr), n)
     return gain * out / (np.max(np.abs(out)) + 1e-12)
 
@@ -345,23 +440,29 @@ def thunder_swell(sr=SR, dur=24.0, gain=1.0, rng=None, lp_hz=180.0):
     t = np.arange(n) / sr
     x = brown_noise(n, rng, sr)
     x = lowpass(x, lp_hz, sr, order=2)
-    rumble = 0.6 + 0.4 * lowpass(rng.standard_normal(n), 0.9, sr, order=1) / 0.25
-    rumble = np.clip(rumble, 0.0, 1.5)
+    lf = lowpass(rng.standard_normal(n), 0.9, sr, order=1)
+    lf = lf / (np.std(lf[sr:]) + 1e-12)          # normalise by its own statistics
+    rumble = np.clip(0.6 + 0.4 * lf, 0.0, 1.5)
     env = raised_cosine_fade(int(0.35 * n), int(0.55 * n), n)
     out = x * env * rumble
     return gain * out / (np.max(np.abs(out)) + 1e-12)
 
 
-def shimmer_air(n, sr=SR, rng=None, lo=3000.0, hi=8000.0, am_hz=0.07):
-    """Very quiet 3-8 kHz 'air' (the band Tomatis called 'charging'), as a slowly
-    breathing band of filtered noise; stereo decorrelated."""
-    rng = rng or np.random.default_rng(12)
-    t = np.arange(n) / sr
-    out = np.zeros((2, n))
-    for ch in range(2):
-        x = bandpass(rng.standard_normal(n), lo, hi, sr, order=2)
-        out[ch] = x / (np.std(x) + 1e-9) * (0.6 + 0.4 * np.sin(TWO_PI * am_hz * t + ch * 1.7))
-    return out
+class AirStream:
+    """Very quiet 3-8 kHz 'air' (the band Tomatis called 'charging'): a slowly
+    breathing band of filtered noise, stereo decorrelated, rendered block-wise
+    on the caller's absolute time axis with carried filter state."""
+
+    def __init__(self, rng, sr=SR, lo=3000.0, hi=8000.0, am_hz=0.07):
+        self.streams = [BandNoiseStream(np.random.default_rng(rng.integers(1 << 31)), lo, hi, sr, order=2) for _ in range(2)]
+        self.am_hz = am_hz
+
+    def next(self, t_block):
+        n = len(t_block)
+        out = np.zeros((2, n))
+        for ch in range(2):
+            out[ch] = self.streams[ch].next(n) * (0.6 + 0.4 * np.sin(TWO_PI * self.am_hz * t_block + ch * 1.7))
+        return out
 
 
 class AdditiveDrone:
@@ -436,29 +537,37 @@ def chant_voice(n, f0, vowel_sequence, sr=SR, rng=None, vibrato_hz=4.8, vibrato_
     P = np.zeros(n)
     env = np.zeros(n)
     nf = int(fade_s * sr)
+    wsum = np.zeros(n)
     for item in vowel_sequence:
         s, e, vw = item[0], item[1], item[2]
         f_item = item[3] if len(item) > 3 else f0
         fr, bw = vowel_formants(vw)
-        a, b = int(s * sr), int(min(e, n / sr) * sr)
+        # each segment is widened by fade_s/2 on both sides so that adjacent
+        # segments overlap by fade_s and their raised-cosine edges sum to 1:
+        # a true amplitude-constant cross-fade with formant and pitch glides
+        a = max(int((s - fade_s / 2) * sr), 0)
+        b = min(int((e + fade_s / 2) * sr), n)
         if b <= a:
             continue
         seg = np.zeros(n)
-        seg[a:b] = raised_cosine_fade(min(nf, (b - a) // 2), min(nf, (b - a) // 2), b - a)
-        env = np.maximum(env, seg)
+        nfa = min(nf, (b - a) // 2)
+        seg[a:b] = raised_cosine_fade(nfa, nfa, b - a)
+        wsum += seg
+        env = np.minimum(env + seg, 1.0)
         P += f_item * seg
         for k in range(3):
             F[k] += fr[k] * seg
             B[k] += bw[k] * seg
-    # where no vowel is active, hold a neutral formant so filters stay stable
+    # weighted averages across overlapping segments; neutral formant where silent
     neutral_f, neutral_b = vowel_formants("M")
     for k in range(3):
-        F[k] = np.where(env > 1e-4, F[k] / np.maximum(env, 1e-4), neutral_f[k])
-        B[k] = np.where(env > 1e-4, B[k] / np.maximum(env, 1e-4), neutral_b[k])
-    pitch = np.where(env > 1e-4, P / np.maximum(env, 1e-4), f0)
+        F[k] = np.where(wsum > 1e-4, F[k] / np.maximum(wsum, 1e-4), neutral_f[k])
+        B[k] = np.where(wsum > 1e-4, B[k] / np.maximum(wsum, 1e-4), neutral_b[k])
+    pitch = np.where(wsum > 1e-4, P / np.maximum(wsum, 1e-4), f0)
     for v in range(voices):
         d = 1.0 + detune * (v - (voices - 1) / 2)
-        jitter = 1.0 + 0.0025 * lowpass(rng.standard_normal(n), 3.0, sr) / 0.2
+        lf = lowpass(rng.standard_normal(n), 3.0, sr)
+        jitter = 1.0 + 0.0025 * lf / (np.std(lf[sr:]) + 1e-12)     # ~0.25 % slow pitch wander
         f = pitch * d * jitter * (1.0 + vibrato_depth * np.sin(TWO_PI * vibrato_hz * t + rng.uniform(0, TWO_PI)))
         ph = phase_increment(f, sr)
         src = np.zeros(n)
@@ -482,12 +591,16 @@ def chant_voice(n, f0, vowel_sequence, sr=SR, rng=None, vibrato_hz=4.8, vibrato_
                 bw = float(np.mean(B[k, a:b]))
                 r = np.exp(-np.pi * bw / sr)
                 theta = TWO_PI * fc / sr
-                bcoef = [1.0 - r]
+                # unity gain at the resonator's own centre frequency
+                b0 = (1.0 - r) * np.sqrt(1.0 - 2.0 * r * np.cos(2.0 * theta) + r * r)
                 acoef = [1.0, -2.0 * r * np.cos(theta), r * r]
-                seg, zi[k] = signal.lfilter(bcoef, acoef, x, zi=zi[k])
-                acc += seg * (1.0 if k == 0 else (0.5 if k == 1 else 0.25))
+                seg, zi[k] = signal.lfilter([b0], acoef, x, zi=zi[k])
+                acc += seg * (1.0, 0.7, 0.4)[k]
             y[a:b] = acc
-        y *= env
+        # slow loudness equalisation: formant/harmonic alignment makes some vowels
+        # 2x louder than others at a given pitch; level the syllables (0.5 s window)
+        lvl = np.sqrt(lowpass(y * y, 1.5, sr, order=1).clip(0) + 1e-9)
+        y = y / np.maximum(lvl, 0.02 * np.max(lvl)) * env
         p = pan_spread * (v - (voices - 1) / 2) / max(1, (voices - 1) / 2)
         out += pan(y, p)
     out /= (np.max(np.abs(out)) + 1e-12)

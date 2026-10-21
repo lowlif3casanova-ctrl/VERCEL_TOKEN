@@ -73,23 +73,29 @@ def design_full():
                "Harae / Monroe 'resonant tuning' / Nada yoga 'tinkling -> bell'"),
         _stage("Descent", 4, 11, "Beat glides 10 -> 7.83 Hz (the Schumann fundamental) over five minutes; Gyuto-style chord drone at 68.05 Hz with the 5th and 10th harmonics lifted; dungchen swell. Body goes to sleep, mind stays.",
                "Monroe Focus 10 'mind awake, body asleep' / Gyuto dbyangs"),
-        _stage("Drum Gate", 11, 21, "Distant thunder opens the gate; frame drum at 4.5 Hz (270 bpm, the Harner / Maxfield journey rate) with a theta isochronic pulse at the same rate; didgeridoo breath-drone; beat settles at 4.5 Hz.",
-               "Core shamanism (Harner / Siberian / Sámi) / Yolngu yidaki / Bardo 'sound'"),
+        _stage("Drum Gate", 11, 21, "Distant thunder opens the gate; frame drum at 4.25 Hz (255 bpm, Harner's measured journey tempo and the Earth-year theta octave) with a theta isochronic pulse at the same rate; didgeridoo breath-drone; stone-chamber drone; beat settles at 4.25 Hz.",
+               "Core shamanism (Harner / Siberian / Sámi) / Yolngu yidaki / Neolithic chamber"),
         _stage("Ajna", 21, 29, "Seven Greek vowels A E Ē I O U Ō, each a pure-ratio step higher, then IAŌ; the just-intonation chakra bowl ladder rises 272 -> 510 Hz with each bowl 'wah'-ing at the 6 Hz theta beat.",
                "Greek Magical Papyri / Discourse on the Eighth and Ninth / Shat-chakra-nirupana"),
-        _stage("No-Time", 29, 37, "Outer carriers at 4 Hz with the 136 Hz carrier at 10 Hz alpha (Monroe-style stacking: body deeply asleep, awareness awake) and a 40 Hz gamma isochronic pulse (Lutz 2004 monk gamma, ASSR optimum); dungchen pedal tones; the 'thousand thunders' pass by at the end.",
+        _stage("No-Time", 29, 37, "Outer carriers at 3.0 -> 2.13 Hz with the 136 Hz carrier at 10 Hz alpha (Monroe-style stacking: body deeply asleep, awareness awake) and four 90-second 40 Hz gamma cues (Lutz 2004 monk gamma, ASSR optimum); dungchen pedal tones; a 0.2 Hz surge on the drone; the 'thousand thunders' pass by at the end.",
                "Monroe Focus 15 'no time' / Cade-Wise awakened mind / Chönyid bardo"),
-        _stage("Crown", 37, 43, "Clear-light return: the beat rises to 7.83 Hz, A-OM-HUM three-point chant (272 / 204 / 136 Hz: forehead, throat, heart), Gyuto drone, a whisper of 3-8 kHz 'air'.",
+        _stage("Crown", 37, 43, "Clear-light return: the beat rises to 7.83 Hz, A-OM-HUM three-point chant (272 / 204 / 136 Hz: forehead, throat, heart), Gyuto drone, conch clusters, a whisper of 3-8 kHz 'air'.",
                "Bön / Dzogchen A-OM-HUM / Hesychast light / Tomatis"),
-        _stage("Return", 43, 48, "Call-back drum signal, 963 Hz bowl struck once in the clear, beat climbs 7.83 -> 10 -> 13 Hz (SMR) so you come back alert; breath pacer returns; Om bowls and tingsha close the circle.",
+        _stage("Return", 43, 48, "Call-back drum signal, 963 Hz bowl struck once in the clear, beat climbs 7.83 -> 10 -> 14.1 Hz (SMR) so you come back alert; breath pacer returns; Om bowls and tingsha close the circle.",
                "Foundation for Shamanic Studies call-back / Sterman SMR / Yoga Nidra externalisation"),
     ]
-    beat = [(0, 10.0), (4 * MIN, 10.0), (9 * MIN, 7.83), (11 * MIN, 7.83), (13.5 * MIN, 4.5),
-            (21 * MIN, 4.5), (23 * MIN, 6.0), (29 * MIN, 6.0), (31 * MIN, 4.0), (37 * MIN, 4.0),
-            (40 * MIN, 7.83), (43.5 * MIN, 7.83), (45.5 * MIN, 10.0), (47.5 * MIN, 13.0), (D, 13.0)]
-    # the Om-fundamental carrier keeps a 10 Hz alpha beat during No-Time (mind awake / body asleep)
-    beat_om = [p for p in beat if not (31 * MIN <= p[0] <= 37 * MIN)] + [(31 * MIN, 10.0), (37 * MIN, 10.0)]
-    beat_om.sort()
+    # Beat-rate ladder.  4.25 Hz = Harner's measured journey tempo (254.7 bpm) and Cousto's
+    # Earth-year theta octave (136.10 / 32); 2.13 Hz = the Earth-year delta octave (136.10 / 64),
+    # the Focus-15 'no time' floor; 7.83 Hz = Schumann fundamental; 14.1 Hz = Schumann 2nd mode / SMR.
+    beat = [(0, 10.0), (4 * MIN, 10.0), (9 * MIN, 7.83), (11 * MIN, 7.83), (13.5 * MIN, 4.25),
+            (21 * MIN, 4.25), (23 * MIN, 6.0), (29 * MIN, 6.0), (31 * MIN, 3.0), (33 * MIN, 3.0), (34 * MIN, 2.13),
+            (35.5 * MIN, 2.13), (37 * MIN, 4.25), (40 * MIN, 7.83), (43.5 * MIN, 7.83), (45.3 * MIN, 10.0),
+            (47.6 * MIN, 14.1), (D, 14.1)]
+    # The Om-fundamental carrier keeps a 10 Hz alpha beat during No-Time (Monroe-style stacking:
+    # body deeply asleep on the outer carriers, awareness held awake on the inner one) and keeps a
+    # 7.83 Hz theta bridge under the alpha/SMR return (Cade-Wise 'awakened mind' = all bands at once).
+    beat_om = [p for p in beat if p[0] <= 29 * MIN] + [(31 * MIN, 10.0), (37 * MIN, 10.0), (40 * MIN, 7.83),
+                                                       (46.0 * MIN, 7.83), (47.7 * MIN, 12.5), (D, 12.5)]
     carriers = [
         dict(hz=3 * OM, gain=[(0, 0), (25, 0.17), (D - 45, 0.17), (D - 6, 0.0)], beat=None),
         dict(hz=2 * OM, gain=[(0, 0), (25, 0.12), (D - 45, 0.12), (D - 6, 0.0)], beat=None),
@@ -99,10 +105,12 @@ def design_full():
         dict(name="iso_theta", hz=TONE["pa"], rate="beat",
              gain=[(0, 0), (12.5 * MIN, 0), (14 * MIN, 0.05), (20.5 * MIN, 0.05), (21.5 * MIN, 0),
                    (29.5 * MIN, 0), (31 * MIN, 0.045), (36 * MIN, 0.045), (37 * MIN, 0)]),
+        # 40 Hz gamma as 90-second 'lucidity cues' (Voss 2014 / Chan 2022 pulse logic), not a continuous bed
         dict(name="iso_gamma", hz=4 * OM, rate=[(0, 40.0)],
-             gain=[(0, 0), (30.5 * MIN, 0), (33 * MIN, 0.055), (39 * MIN, 0.055), (40.5 * MIN, 0)]),
+             gain=[(0, 0)] + sum([[(s, 0), (s + 20, 0.055), (s + 70, 0.055), (s + 90, 0)]
+                                  for s in (31.8 * MIN, 34.3 * MIN, 36.6 * MIN, 41.0 * MIN)], [])),
     ]
-    drums = [dict(start=11.5 * MIN, end=20.5 * MIN, rate_hz=4.5, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=25)]
+    drums = [dict(start=11.5 * MIN, end=20.5 * MIN, rate_hz=4.25, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=25)]
     callback_at = 43 * MIN + 5
     bowls = []
     # Threshold: Om bowls, right-leaning
@@ -110,12 +118,12 @@ def design_full():
     # Descent: fifth and octave, wah at Schumann rate
     bowls += [dict(t=6 * MIN, f0=TONE["pa"], gain=0.36, pan=-0.3, split=7.83), dict(t=8.5 * MIN, f0=TONE["octave"], gain=0.36, pan=0.3, split=7.83)]
     # Drum Gate
-    bowls += [dict(t=15 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.5), dict(t=18 * MIN, f0=TONE["pa"], gain=0.34, pan=0.25, split=4.5)]
+    bowls += [dict(t=15 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.25), dict(t=18 * MIN, f0=TONE["pa"], gain=0.34, pan=0.25, split=4.25)]
     # Ajna: chakra ladder in just intonation, each wah-ing at 6 Hz
     for i, f in enumerate(CHAKRA_LADDER):
         bowls.append(dict(t=21.6 * MIN + i * 55, f0=f, gain=0.34 - 0.012 * i, pan=(-1) ** i * 0.35, split=6.0))
     # No-Time
-    bowls += [dict(t=32 * MIN, f0=OM, gain=0.34, pan=-0.2, split=4.0), dict(t=35 * MIN, f0=TONE["octave"], gain=0.32, pan=0.2, split=4.0)]
+    bowls += [dict(t=32 * MIN, f0=OM, gain=0.34, pan=-0.2, split=3.0), dict(t=35 * MIN, f0=TONE["octave"], gain=0.32, pan=0.2, split=2.13)]
     # Crown
     bowls += [dict(t=38 * MIN, f0=TONE["octave"], gain=0.36, pan=0.25, split=7.83), dict(t=40 * MIN, f0=3 * OM, gain=0.3, pan=-0.25, split=7.83),
               dict(t=41.5 * MIN, f0=4 * OM, gain=0.26, pan=0.2, split=7.83), dict(t=42.5 * MIN, f0=OM, gain=0.4, pan=0.0, split=7.83)]
@@ -129,8 +137,12 @@ def design_full():
                dict(t=47 * MIN + 50, gain=0.22), dict(t=47 * MIN + 53, gain=0.2)]
     dungchen = [dict(t=9.3 * MIN, gain=0.22), dict(t=30 * MIN, gain=0.22), dict(t=33.5 * MIN, gain=0.22), dict(t=36 * MIN, gain=0.2)]
     thunder = [dict(t=10.9 * MIN, gain=0.26), dict(t=35.4 * MIN, gain=0.2), dict(t=36.0 * MIN, gain=0.24), dict(t=36.5 * MIN, gain=0.22)]
+    # Chavín-style conch cluster: the upper-world call during the Crown ascent (beats at 3.9 / 7.83 Hz)
+    pututu = [dict(t=38.6 * MIN, gain=0.2, pan=-0.4), dict(t=40.4 * MIN, gain=0.2, pan=0.4), dict(t=42.0 * MIN, gain=0.18, pan=0.0)]
     drones = dict(
         tanpura=dict(f0=OM, gain=[(0, 0), (40, 0.16), (42.5 * MIN, 0.16), (45 * MIN, 0.0)]),
+        # Neolithic-chamber register (108.88 Hz = 5:4 below Om), heavily reverberant, under the drum journey
+        chamber=dict(f0=OM * 4 / 5, gain=[(0, 0), (11.5 * MIN, 0), (13 * MIN, 0.07), (20 * MIN, 0.07), (21 * MIN, 0)]),
         gyuto=dict(f0=GYUTO, gain=[(0, 0), (4.8 * MIN, 0), (6 * MIN, 0.10), (10.5 * MIN, 0.10), (11.5 * MIN, 0),
                                    (37.5 * MIN, 0), (38.5 * MIN, 0.09), (42 * MIN, 0.09), (43 * MIN, 0)],
                    # Smith/Stevens/Tomlinson 1967: the Gyuto 'chord' lifts the 5th and 10th harmonics
@@ -156,9 +168,12 @@ def design_full():
                   gain=[(0, 0), (30, 0.06), (11 * MIN, 0.06), (13 * MIN, 0.0), (43.5 * MIN, 0), (44.5 * MIN, 0.05), (D - 20, 0.05), (D - 2, 0)])
     pink = dict(gain=[(0, 0), (15, 0.011), (D - 30, 0.011), (D - 3, 0)])
     air = dict(gain=[(0, 0), (38 * MIN, 0), (39 * MIN, 0.004), (42 * MIN, 0.004), (42.8 * MIN, 0)])
+    # Monroe's 'vibrational state': a slow 0.2 Hz (5-second) surge on the drone bed, deepening through No-Time
+    vibration = dict(rate_hz=0.2, depth=[(0, 0), (30.5 * MIN, 0), (33 * MIN, 0.35), (36.5 * MIN, 0.35), (37.5 * MIN, 0)])
     return dict(name="Pineal Gateway — full session (48 min)", duration=D, stages=stages, beat=beat, carriers=carriers,
                 isochronic=isochronic, drums=drums, callback_at=callback_at, bowls=bowls, bonsho=bonsho, tingsha=tingsha,
-                dungchen=dungchen, thunder=thunder, drones=drones, chant=chant, breath=breath, pink=pink, air=air)
+                dungchen=dungchen, thunder=thunder, pututu=pututu, drones=drones, chant=chant, breath=breath, pink=pink, air=air,
+                vibration=vibration)
 
 
 # ----------------------------------------------------------------------------
@@ -169,12 +184,12 @@ def design_daily():
     stages = [
         _stage("Threshold", 0, 2, "Alpha 10 Hz, Om carriers, breath pacer", "resonant tuning"),
         _stage("Descent", 2, 5, "Glide to 6 Hz theta; Gyuto drone", "Focus 10"),
-        _stage("Drum Gate", 5, 10, "4.5 Hz drum and theta pulse; didgeridoo", "journey"),
-        _stage("No-Time", 10, 12.5, "4 Hz with 10 Hz alpha on the Om carrier and 40 Hz gamma; A-OM-HUM", "Focus 15 / awakened mind"),
-        _stage("Return", 12.5, 15, "Call-back; 7.83 -> 12 Hz", "call-back / SMR"),
+        _stage("Drum Gate", 5, 10, "4.25 Hz drum and theta pulse; didgeridoo; chamber drone", "journey"),
+        _stage("No-Time", 10, 12.5, "3 Hz with 10 Hz alpha on the Om carrier and 40 Hz gamma; A-OM-HUM", "Focus 15 / awakened mind"),
+        _stage("Return", 12.5, 15, "Call-back; 7.83 -> 14.1 Hz; 963 Hz bowl in the clear", "call-back / SMR"),
     ]
-    beat = [(0, 10.0), (2 * MIN, 10.0), (4.5 * MIN, 6.0), (5 * MIN, 6.0), (6 * MIN, 4.5), (10 * MIN, 4.5),
-            (10.8 * MIN, 4.0), (12.3 * MIN, 4.0), (13.2 * MIN, 7.83), (14.6 * MIN, 12.0), (D, 12.0)]
+    beat = [(0, 10.0), (2 * MIN, 10.0), (4.5 * MIN, 6.0), (5 * MIN, 6.0), (6 * MIN, 4.25), (10 * MIN, 4.25),
+            (10.8 * MIN, 3.0), (12.3 * MIN, 3.0), (13.2 * MIN, 7.83), (14.6 * MIN, 14.1), (D, 14.1)]
     beat_om = [p for p in beat if not (10.8 * MIN <= p[0] <= 12.3 * MIN)] + [(10.8 * MIN, 10.0), (12.3 * MIN, 10.0)]
     beat_om.sort()
     carriers = [
@@ -188,20 +203,23 @@ def design_daily():
         dict(name="iso_gamma", hz=4 * OM, rate=[(0, 40.0)],
              gain=[(0, 0), (10 * MIN, 0), (11 * MIN, 0.055), (12.3 * MIN, 0.055), (12.9 * MIN, 0)]),
     ]
-    drums = [dict(start=5.3 * MIN, end=9.8 * MIN, rate_hz=4.5, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=15)]
-    callback_at = 12.55 * MIN
+    drums = [dict(start=5.3 * MIN, end=9.8 * MIN, rate_hz=4.25, gain=0.42, accent_every=4, humanize_ms=7, ramp_s=15)]
+    callback_at = 12.55 * MIN          # ends ~13:55 with the shorter 30 s grounding used in the daily version
     bowls = [dict(t=20, f0=OM, gain=0.42, pan=0.25, split=8.0), dict(t=80, f0=OM, gain=0.4, pan=0.2, split=8.0),
-             dict(t=3.5 * MIN, f0=TONE["pa"], gain=0.36, pan=-0.3, split=6.0), dict(t=7.5 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.5)]
+             dict(t=3.5 * MIN, f0=TONE["pa"], gain=0.36, pan=-0.3, split=6.0), dict(t=7.5 * MIN, f0=OM, gain=0.36, pan=-0.2, split=4.25)]
     for i, f in enumerate((CHAKRA_LADDER[0], CHAKRA_LADDER[4], CHAKRA_LADDER[6])):
-        bowls.append(dict(t=10.2 * MIN + i * 40, f0=f, gain=0.32, pan=(-1) ** i * 0.3, split=4.0))
-    bowls += [dict(t=13.7 * MIN, f0=SOLFEGGIO_963, gain=0.28, pan=0.15, split=None),
-              dict(t=14.2 * MIN, f0=OM, gain=0.42, pan=0.2, split=10.0), dict(t=14.7 * MIN, f0=OM, gain=0.44, pan=0.2, split=None)]
+        bowls.append(dict(t=10.2 * MIN + i * 40, f0=f, gain=0.32, pan=(-1) ** i * 0.3, split=3.0))
+    # 963 Hz bowl once the tanpura has faded (13:36) and the grounding strokes have ended (~13:55)
+    bowls += [dict(t=14.0 * MIN, f0=SOLFEGGIO_963, gain=0.28, pan=0.15, split=None),
+              dict(t=14.35 * MIN, f0=OM, gain=0.42, pan=0.2, split=10.0), dict(t=14.6 * MIN, f0=OM, gain=0.44, pan=0.2, split=None)]
     bonsho = [dict(t=10, gain=0.34), dict(t=2 * MIN, gain=0.32), dict(t=5 * MIN, gain=0.32), dict(t=10 * MIN, gain=0.32), dict(t=12.5 * MIN, gain=0.32)]
     tingsha = [dict(t=6, gain=0.22), dict(t=10 * MIN + 3, gain=0.16), dict(t=14 * MIN + 50, gain=0.22), dict(t=14 * MIN + 53, gain=0.2)]
     dungchen = [dict(t=4.2 * MIN, gain=0.22), dict(t=10.3 * MIN, gain=0.22)]
     thunder = [dict(t=4.9 * MIN, gain=0.24), dict(t=12.0 * MIN, gain=0.2)]
+    pututu = [dict(t=11.4 * MIN, gain=0.2, pan=-0.4), dict(t=12.1 * MIN, gain=0.18, pan=0.4)]
     drones = dict(
-        tanpura=dict(f0=OM, gain=[(0, 0), (30, 0.16), (13.5 * MIN, 0.16), (14.4 * MIN, 0.0)]),
+        tanpura=dict(f0=OM, gain=[(0, 0), (30, 0.16), (12.9 * MIN, 0.16), (13.6 * MIN, 0.0)]),
+        chamber=dict(f0=OM * 4 / 5, gain=[(0, 0), (5.5 * MIN, 0), (6.5 * MIN, 0.07), (9.5 * MIN, 0.07), (10.2 * MIN, 0)]),
         gyuto=dict(f0=GYUTO, gain=[(0, 0), (2.2 * MIN, 0), (3 * MIN, 0.10), (4.8 * MIN, 0.10), (5.5 * MIN, 0)],
                    formant=[(0, 5.0), (3 * MIN, 5.0), (4 * MIN, 10.0), (5 * MIN, 5.0)]),
         didgeridoo=dict(f0=GYUTO, gain=[(0, 0), (5.5 * MIN, 0), (6.5 * MIN, 0.10), (9.5 * MIN, 0.10), (10.2 * MIN, 0)], breath_hz=0.55),
@@ -216,9 +234,11 @@ def design_daily():
                   gain=[(0, 0), (20, 0.06), (4.5 * MIN, 0.06), (5.5 * MIN, 0.0), (12.8 * MIN, 0), (13.5 * MIN, 0.05), (D - 15, 0.05), (D - 2, 0)])
     pink = dict(gain=[(0, 0), (10, 0.011), (D - 20, 0.011), (D - 3, 0)])
     air = dict(gain=[(0, 0), (10.5 * MIN, 0), (11 * MIN, 0.004), (12.2 * MIN, 0.004), (12.6 * MIN, 0)])
+    vibration = dict(rate_hz=0.2, depth=[(0, 0), (10.5 * MIN, 0), (11.2 * MIN, 0.35), (12.2 * MIN, 0.35), (12.6 * MIN, 0)])
     return dict(name="Pineal Gateway — daily session (15 min)", duration=D, stages=stages, beat=beat, carriers=carriers,
-                isochronic=isochronic, drums=drums, callback_at=callback_at, bowls=bowls, bonsho=bonsho, tingsha=tingsha,
-                dungchen=dungchen, thunder=thunder, drones=drones, chant=chant, breath=breath, pink=pink, air=air)
+                isochronic=isochronic, drums=drums, callback_at=callback_at, callback_ground_s=30.0, bowls=bowls, bonsho=bonsho,
+                tingsha=tingsha, dungchen=dungchen, thunder=thunder, pututu=pututu, drones=drones, chant=chant, breath=breath,
+                pink=pink, air=air, vibration=vibration)
 
 
 # ----------------------------------------------------------------------------
@@ -247,21 +267,33 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
     iso_rate = [None if i["rate"] == "beat" else S.Lane(i["rate"]) for i in design["isochronic"]]
 
     dr = design["drones"]
+    # tanpura: Sa string (136.1) plus the Pa string (204.15), the 5-8-8-1 tuning's fifth
     tanpura = S.AdditiveDrone(dr["tanpura"]["f0"], n_harm=28, rolloff=1.0)
+    tanpura_pa = S.AdditiveDrone(dr["tanpura"]["f0"] * 1.5, n_harm=20, rolloff=1.05)
     tan_gain = S.Lane(dr["tanpura"]["gain"])
     tan_lfo_rates = rng.uniform(0.03, 0.25, size=28)
     tan_lfo_phase = rng.uniform(0, S.TWO_PI, size=28)
+    pa_lfo_rates = rng.uniform(0.03, 0.2, size=20)
+    pa_lfo_phase = rng.uniform(0, S.TWO_PI, size=20)
     gyuto = S.AdditiveDrone(dr["gyuto"]["f0"], n_harm=36, rolloff=0.8)
     gy_gain = S.Lane(dr["gyuto"]["gain"])
     gy_formant = S.Lane(dr["gyuto"]["formant"])
     didg = S.AdditiveDrone(dr["didgeridoo"]["f0"], n_harm=36, rolloff=0.75)
     dg_gain = S.Lane(dr["didgeridoo"]["gain"])
     dg_breath = dr["didgeridoo"]["breath_hz"]
+    chamber_acc = S.PhaseAcc(9)
+    ch_gain = S.Lane(dr["chamber"]["gain"])
+    ch_f0 = dr["chamber"]["f0"]
     breath_gain = S.Lane(design["breath"]["gain"])
     breath_rate = S.Lane(design["breath"]["rate"])
     breath_acc = S.PhaseAcc(1)
+    breath_noise = [S.BandNoiseStream(np.random.default_rng(seed + 800 + ch), 110.0, 520.0, sr, order=4) for ch in range(2)]
     pink_gain = S.Lane(design["pink"]["gain"])
+    pink_stream = [S.PinkStream(np.random.default_rng(seed + 810 + ch)) for ch in range(2)]
     air_gain = S.Lane(design["air"]["gain"])
+    air_stream = S.AirStream(np.random.default_rng(seed + 820), sr)
+    vib_depth = S.Lane(design.get("vibration", {}).get("depth", [(0, 0)]))
+    vib_rate = design.get("vibration", {}).get("rate_hz", 0.2)
 
     log("rendering continuous layers")
     for a in range(0, n, blk):
@@ -287,12 +319,15 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
             sig = (g * gate * np.sin(ph_c)).astype(np.float32)
             dry[0, a:b] += sig
             dry[1, a:b] += sig
-        # tanpura / Om drone with slowly blooming harmonics (jivari)
+        # tanpura / Om drone with slowly blooming harmonics (jivari); the 0.2 Hz 'vibration' surge rides on it
         g = tan_gain.at(t)
         if np.max(g) > 0:
             lfo = 0.55 + 0.45 * np.sin(S.TWO_PI * tan_lfo_rates[:, None] * t[None, :] + tan_lfo_phase[:, None])
             sig = tanpura.render(t, extra_weights=lfo, vibrato_hz=0.0)
-            sig = g * sig / 4.0
+            lfo_pa = 0.55 + 0.45 * np.sin(S.TWO_PI * pa_lfo_rates[:, None] * t[None, :] + pa_lfo_phase[:, None])
+            sig = sig + 0.5 * tanpura_pa.render(t, extra_weights=lfo_pa, vibrato_hz=0.0)
+            vib = vib_depth.at(t)
+            sig = g * sig / 4.6 * (1.0 - vib * 0.5 * (1.0 - np.cos(S.TWO_PI * vib_rate * t)))
             for ch in range(2):
                 wet[ch, a:b] += (0.5 * sig).astype(np.float32)
                 dry[ch, a:b] += (0.5 * sig).astype(np.float32)
@@ -316,25 +351,31 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
             for ch in range(2):
                 wet[ch, a:b] += (0.5 * sig).astype(np.float32)
                 dry[ch, a:b] += (0.5 * sig).astype(np.float32)
+        # stone-chamber drone: mostly reverberant
+        g = ch_gain.at(t)
+        if np.max(g) > 0:
+            sig = g * S.chamber_drone_block(chamber_acc, t, ch_f0, sr) / 2.5
+            for ch in range(2):
+                wet[ch, a:b] += (0.8 * sig).astype(np.float32)
+                dry[ch, a:b] += (0.2 * sig).astype(np.float32)
+        else:
+            chamber_acc.advance(ch_f0 * np.arange(1, 10)[:, None] * np.ones((1, b - a)), sr)
         # breath pacer: ocean-like filtered noise swelling at the breath-rate lane (phase-continuous)
         g = breath_gain.at(t)
+        ph_b = breath_acc.advance(breath_rate.at(t), sr)
         if np.max(g) > 0:
-            ph_b = breath_acc.advance(breath_rate.at(t), sr)
             swell = (0.5 - 0.5 * np.cos(ph_b)) ** 1.6
             for ch in range(2):
-                nz = S.bandpass(rng.standard_normal(b - a), 110.0, 520.0, sr, order=4)
-                dry[ch, a:b] += (g * swell * nz / (np.std(nz) + 1e-9) * 0.7).astype(np.float32)
-        else:
-            breath_acc.advance(breath_rate.at(t), sr)
-        # pink bed (independent per channel)
+                dry[ch, a:b] += (g * swell * breath_noise[ch].next(b - a) * 0.7).astype(np.float32)
+        # pink bed (independent per channel, filter state carried across blocks)
         g = pink_gain.at(t)
         if np.max(g) > 0:
             for ch in range(2):
-                dry[ch, a:b] += (g * S.pink_noise(b - a, rng)).astype(np.float32)
-        # 3-8 kHz 'air'
+                dry[ch, a:b] += (g * pink_stream[ch].next(b - a)).astype(np.float32)
+        # 3-8 kHz 'air' (absolute time axis, carried filter state)
         g = air_gain.at(t)
         if np.max(g) > 0:
-            dry[:, a:b] += (g[None, :] * S.shimmer_air(b - a, sr, rng)).astype(np.float32)
+            dry[:, a:b] += (g[None, :] * air_stream.next(t)).astype(np.float32)
         if (a // blk) % 30 == 0:
             log(f"  block {a // blk + 1}/{(n + blk - 1) // blk}")
 
@@ -342,7 +383,8 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
     log("rendering drums")
     wet += S.render_drum_track(n, design["drums"], sr, np.random.default_rng(seed + 1))
     if design.get("callback_at") is not None:
-        cb, cb_end = S.harner_callback(n, design["callback_at"], sr, np.random.default_rng(seed + 2), gain=0.46)
+        cb, cb_end = S.harner_callback(n, design["callback_at"], sr, np.random.default_rng(seed + 2), gain=0.46,
+                                       ground_dur=design.get("callback_ground_s", 60.0))
         wet += cb
         log(f"  call-back signal {design['callback_at']/60:.2f} -> {cb_end/60:.2f} min")
 
@@ -364,6 +406,9 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
     for i, ev in enumerate(design["thunder"]):
         sig = S.thunder_swell(sr, gain=ev["gain"], rng=np.random.default_rng(seed + 600 + i))
         S.add_at(wet, int(ev["t"] * sr), S.pan(sig, (-1) ** i * 0.5).astype(np.float32))
+    for i, ev in enumerate(design.get("pututu", [])):
+        sig = S.pututu_cluster(sr, gain=ev["gain"], rng=np.random.default_rng(seed + 700 + i))
+        S.add_at(wet, int(ev["t"] * sr), S.pan(sig, ev["pan"]).astype(np.float32))
 
     log("rendering chant")
     for i, ch in enumerate(design["chant"]):
@@ -387,6 +432,11 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
 
     # --- mastering ---------------------------------------------------------------
     log("mastering")
+    # master fade so that no ringing bowl, reverb tail or bell is cut at the last sample
+    nf = int(4.0 * sr)
+    mix[:, -nf:] *= S.raised_cosine_fade(0, nf, nf)[None, :].astype(np.float32)
+    nf0 = int(0.5 * sr)
+    mix[:, :nf0] *= S.raised_cosine_fade(nf0, 0, nf0)[None, :].astype(np.float32)
     sos = S.signal.butter(2, 20.0, "hp", fs=sr, output="sos")
     for ch in range(2):
         mix[ch] = S.signal.sosfiltfilt(sos, mix[ch].astype(np.float64)).astype(np.float32)
@@ -412,7 +462,7 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
         isochronic=[dict(name=i["name"], hz=i["hz"], gain_lane=i["gain"],
                          rate_lane=(design["beat"] if i["rate"] == "beat" else i["rate"])) for i in design["isochronic"]],
         drums=design["drums"], callback_at=design.get("callback_at"), bowls=design["bowls"], bonsho=design["bonsho"],
-        tingsha=design["tingsha"], dungchen=design["dungchen"], thunder=design["thunder"],
+        tingsha=design["tingsha"], dungchen=design["dungchen"], thunder=design["thunder"], pututu=design.get("pututu", []),
         drones={k: {kk: vv for kk, vv in v.items()} for k, v in design["drones"].items()},
         chant=[dict(start=c["start"], seq=c["seq"]) for c in design["chant"]],
         breath=design["breath"], seed=seed,
@@ -428,22 +478,27 @@ def render(design, out_base, target_lufs=-16.0, ceiling_dbtp=-1.0, seed=2026):
 def encode(wav, out_base, log=print):
     title = os.path.basename(out_base).replace("_", " ")
     try:
+        comment = ("Binaural: stereo headphones required. iPhone/AirPods: turn OFF Spatialize Stereo, Personalized Spatial Audio, "
+                   "Mono Audio and Conversation Awareness; keep L/R balance centred.")
         subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", wav,
                         "-c:a", "flac", "-sample_fmt", "s32", "-compression_level", "8",
                         "-metadata", "title=" + title, "-metadata", "artist=Pineal Gateway (procedural)",
-                        "-metadata", "comment=Binaural: stereo headphones required", out_base + ".flac"], check=True)
+                        "-metadata", "comment=" + comment, out_base + ".flac"], check=True)
         log(f"wrote {out_base}.flac (24-bit lossless)")
         subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", wav,
                         "-c:a", "libmp3lame", "-b:a", "320k", "-joint_stereo", "0", "-id3v2_version", "3",
                         "-metadata", "title=" + title, "-metadata", "artist=Pineal Gateway (procedural)",
-                        "-metadata", "comment=Binaural: stereo headphones required", out_base + ".mp3"], check=True)
+                        "-metadata", "comment=" + comment, out_base + ".mp3"], check=True)
         log(f"wrote {out_base}.mp3 (320 kbps, forced L/R stereo)")
     except (FileNotFoundError, subprocess.CalledProcessError) as e:
         log(f"ffmpeg encode skipped: {e}")
 
 
+DESIGNS = {"full": design_full, "daily": design_daily}
+
 if __name__ == "__main__":
     variant = sys.argv[1] if len(sys.argv) > 1 else "full"
+    if variant not in DESIGNS:
+        sys.exit(f"usage: session.py [{'|'.join(DESIGNS)}] [output_base]")
     out = sys.argv[2] if len(sys.argv) > 2 else f"output/pineal_gateway_{variant}"
-    design = design_full() if variant == "full" else design_daily()
-    render(design, out)
+    render(DESIGNS[variant](), out)

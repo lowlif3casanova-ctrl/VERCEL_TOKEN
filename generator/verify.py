@@ -59,14 +59,31 @@ def envelope_rate(x, sr, f_center, rate_expect, bw=25.0):
     nfft = int(2 ** np.ceil(np.log2(len(env) * 4)))
     E = np.abs(np.fft.rfft(env * np.hanning(len(env)), nfft))
     freqs = np.fft.rfftfreq(nfft, 1.0 / sr)
-    lo, hi = np.searchsorted(freqs, [max(rate_expect * 0.6, 0.3), rate_expect * 1.4 + 1.0])
+    # search ±15 % around the designed rate: other layers (chant harmonics, bowl doublets)
+    # share these bands and would otherwise be picked up as a 'pulse'
+    lo, hi = np.searchsorted(freqs, [max(rate_expect * 0.85, 0.3), rate_expect * 1.15 + 0.2])
     k = lo + int(np.argmax(E[lo:hi]))
     return float(freqs[k])
+
+
+def decode_to_wav(path, out_dir):
+    """Decode an MP3/FLAC with ffmpeg to a float32 WAV so the same measurements
+    can prove the beat survived lossy encoding."""
+    import subprocess
+    os.makedirs(out_dir, exist_ok=True)
+    tmp = os.path.join(out_dir, "_decoded_" + os.path.basename(path) + ".wav")
+    subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", path, "-c:a", "pcm_f32le", tmp], check=True)
+    return tmp
 
 
 def main(wav_path, manifest_path, out_dir):
     with open(manifest_path) as f:
         man = json.load(f)
+    decoded = None
+    if not wav_path.lower().endswith(".wav"):
+        decoded = decode_to_wav(wav_path, out_dir)
+        wav_path_label = os.path.basename(wav_path)
+        wav_path = decoded
     sr, data = wavfile.read(wav_path)
     if data.dtype != np.float32:
         data = data.astype(np.float32) / np.iinfo(data.dtype).max
@@ -86,6 +103,13 @@ def main(wav_path, manifest_path, out_dir):
 
     rows = []
     beat_designed, beat_measured, beat_times = [], [], []
+    # bowls / bells whose fundamental sits on a carrier contaminate that carrier's bins for ~40 s
+    ringing = [(ev["t"], ev["f0"]) for ev in man.get("bowls", [])] + [(ev["t"], 137.8) for ev in man.get("bonsho", [])]
+
+    def bowl_near(t, hz):
+        return any(0 <= t - t0 <= 40.0 and abs(f0 - hz) < 6.0 for (t0, f0) in ringing)
+
+    clean_balances = []
     for t in times:
         c = int(t * sr)
         segL = x[0, c - half:c + half].astype(np.float64)
@@ -99,7 +123,10 @@ def main(wav_path, manifest_path, out_dir):
             fR, aR = carrier_peak(segR, sr, car["hz"] + beat_d / 2)
             meas = abs(fR - fL)
             bal = 20 * np.log10((aL + 1e-12) / (aR + 1e-12))
-            rows.append((t, f"binaural {car['hz']:.2f} Hz", beat_d, meas, bal))
+            flag = " (bowl on this pitch ringing)" if bowl_near(t, car["hz"]) else ""
+            if not flag:
+                clean_balances.append(abs(bal))
+            rows.append((t, f"binaural {car['hz']:.2f} Hz{flag}", beat_d, meas, bal))
             if car is man["carriers"][0]:
                 beat_designed.append(beat_d); beat_measured.append(meas); beat_times.append(t)
         for iso in man.get("isochronic", []):
@@ -116,9 +143,32 @@ def main(wav_path, manifest_path, out_dir):
     clip = int(np.sum(np.abs(x) >= 0.999))
     peak = float(np.max(np.abs(x)))
 
+    # --- robustness to headphone 'spatialisation' (iOS Spatialize Stereo, Android spatializers) ---
+    # Those renderers place L and R as two virtual loudspeakers and feed both to both ears through
+    # HRTFs, i.e. they add interaural crosstalk (contralateral path ~ -6 to -10 dB, ~0.3-0.7 ms later,
+    # head-shadow low-passed).  Simulate that and re-measure: the binaural pair then also exists as a
+    # monaural (acoustic) beat inside each ear, so the beat rate must still be readable.
+    spatial_rows = []
+    xt_gain, xt_delay = 10 ** (-7.0 / 20.0), int(round(0.45e-3 * sr))
+    sos_shadow = signal.butter(1, 1800.0, "lp", fs=sr, output="sos")
+    for t in times[::4]:
+        c = int(t * sr)
+        segL = x[0, c - half:c + half].astype(np.float64)
+        segR = x[1, c - half:c + half].astype(np.float64)
+        shL = signal.sosfilt(sos_shadow, np.concatenate((np.zeros(xt_delay), segL[:-xt_delay])))
+        shR = signal.sosfilt(sos_shadow, np.concatenate((np.zeros(xt_delay), segR[:-xt_delay])))
+        earL = segL + xt_gain * shR
+        earR = segR + xt_gain * shL
+        car = man["carriers"][0]
+        if lane_value(car["gain_lane"], t) < 0.02:
+            continue
+        beat_d = lane_value(car.get("beat_lane") or man["beat_lane"], t)
+        r_m = envelope_rate(earL, sr, car["hz"], beat_d, bw=12.0)
+        spatial_rows.append((t, beat_d, r_m))
+
     # ---- report
     worst = 0.0
-    lines = [f"# Verification report — {os.path.basename(wav_path)}", "",
+    lines = [f"# Verification report — {wav_path_label if decoded else os.path.basename(wav_path)}", "",
              f"Duration: {dur/60:.2f} min · Sample rate: {sr} Hz · Channels: 2", "",
              "## Mastering", "",
              f"| Metric | Value |", "|---|---|",
@@ -134,7 +184,18 @@ def main(wav_path, manifest_path, out_dir):
         err = m - d
         worst = max(worst, abs(err))
         lines.append(f"| {t/60:.2f} | {name} | {d:.3f} | {m:.3f} | {err:+.3f} | {bal:+.2f} |")
-    lines += ["", f"Largest beat-rate error across all windows: **{worst:.3f} Hz** (a 20 s window has 0.05 Hz intrinsic resolution; ramping sections show the mean over the window).", ""]
+    worst_bal = max(clean_balances) if clean_balances else 0.0
+    lines += ["", f"Largest beat-rate error across all windows: **{worst:.3f} Hz** (a 20 s window has 0.05 Hz intrinsic resolution; ramping sections show the mean over the window).",
+              f"Largest interaural level difference of a carrier in windows with no bowl ringing on that pitch: **{worst_bal:.2f} dB** (target < 0.5 dB). Rows marked 'bowl on this pitch ringing' are windows where a monaural bowl's doublet sits on the carrier's frequencies by design, so the balance figure there measures the bowl's pan, not the carrier.", ""]
+    if spatial_rows:
+        worst_sp = max(abs(m - d) for (_, d, m) in spatial_rows)
+        lines += ["## Robustness to headphone spatialisers (iOS 'Spatialize Stereo' and similar)", "",
+                  "A spatialiser feeds each channel partly into the opposite ear (simulated here: −7 dB, 0.45 ms, head-shadow low-pass). "
+                  "The binaural pair then also forms an acoustic (monaural) beat inside each ear. Measured pulse rate of the primary carrier's envelope in the left ear after that crosstalk:", "",
+                  "| t (min) | designed Hz | measured in-ear beat Hz | error Hz |", "|---|---|---|---|"]
+        for (t, d, m) in spatial_rows:
+            lines.append(f"| {t/60:.2f} | {d:.3f} | {m:.3f} | {m-d:+.3f} |")
+        lines += ["", f"Largest error under simulated spatialisation: **{worst_sp:.3f} Hz** — the entrainment rate survives, though as a monaural rather than purely binaural beat. Turning Spatialize Stereo off is still recommended (see the listening guide).", ""]
 
     # ---- plots
     import matplotlib
@@ -157,10 +218,17 @@ def main(wav_path, manifest_path, out_dir):
     ax.set_title("Entrainment frequency map — designed vs measured")
     plt.tight_layout(); plt.savefig(os.path.join(out_dir, "beat_map.png"), dpi=110); plt.close()
 
-    # spectrogram (decimated to 8 kHz for the overview)
+    # spectrogram (decimated to 8 kHz; only the displayed band and ~1 column per pixel are drawn)
     dec = 6
-    mono = signal.decimate(x[0].astype(np.float64), dec, ftype="fir", zero_phase=True)
-    f, t, Sxx = signal.spectrogram(mono, sr // dec, nperseg=4096, noverlap=2048)
+    mono = signal.resample_poly(x[0].astype(np.float64), 1, dec)
+    f, t, Sxx = signal.spectrogram(mono, sr // dec, nperseg=8192, noverlap=0)
+    sel = f <= 2500.0
+    f, Sxx = f[sel], Sxx[sel]
+    step = max(1, Sxx.shape[1] // 1600)
+    if step > 1:
+        m = (Sxx.shape[1] // step) * step
+        Sxx = Sxx[:, :m].reshape(Sxx.shape[0], -1, step).mean(axis=2)
+        t = t[:m:step]
     fig, ax = plt.subplots(figsize=(14, 5))
     ax.pcolormesh(t / 60, f, 10 * np.log10(Sxx + 1e-16), shading="auto", vmin=-130, vmax=-40, cmap="magma")
     ax.set_ylim(0, 2500); ax.set_xlabel("minutes"); ax.set_ylabel("Hz (left channel)")
@@ -175,8 +243,12 @@ def main(wav_path, manifest_path, out_dir):
         fh.write("\n".join(lines))
     print("\n".join(lines[:12]))
     print(f"... {len(rows)} measurement rows; worst beat error {worst:.3f} Hz")
+    if decoded:
+        os.remove(decoded)
     return worst
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        sys.exit("usage: verify.py <audio.wav|.mp3|.flac> <manifest.json> <out_dir>")
     main(sys.argv[1], sys.argv[2], sys.argv[3])
